@@ -3,6 +3,8 @@
 
 <head>
 	<meta charset="UTF-8">
+	<link th:href="@{/css/style.css}" rel="stylesheet" />
+	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 	<title>ユーザ管理画面</title>
 </head>
 
@@ -12,37 +14,33 @@
 	<fieldset>
 		<div class="form-group">
 			<label>ユーザー名:</label>
-			<div class="col-1">
-				<input type="text" />
-				<input type="submit" class="btn" value="検索">
-			</div>
+
+			<input type="text" />
+			<input type="submit" class="btn-mgmt" value="検索">
+
 		</div>
-		
+
 		<hr>
-		
-		<div class="form-group">
-			<label>ユーザID:</label>
+
+		<div class="form-group>" <label>ユーザID:</label>
 			<p>123456789</p>
-		</div>
 		</div>
 		<div class="form-group">
 			<label>パスワード:</label>
-			<div class="col-1">
-				<input type="text" />
-			</div>
+			<input type="text" />
 		</div>
 		<div class="form-group">
 			<label>権限:</label>
-			<div class="col-1">
-				<input type="text" />
-			</div>
+
+			<input type="text" />
+
 		</div>
 		<div class="form-group">
 			<label>利用開始日:</label>
-			<div class="col-1">
-				<input type="text" />
-			</div>
+			<input type="text" />
 		</div>
+
+		<input type="submit" class="btn-mgmt" value="登録">
 
 	</fieldset>
 

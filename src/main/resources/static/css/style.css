@@ -18,6 +18,24 @@
 	/* ホバー時の背景色 */
 }
 
+.btn-mgmt {
+	margin: 30px;
+	padding: 6px 25px;
+	/* パディング */
+	background-color: #DCDCDC;
+	/* ボタンの背景色 */
+	color: #fff;
+	/* テキストの色 */
+	border: none;
+	/* ボーダーなし */
+	cursor: pointer;
+}
+
+.btn-mgmt:hover {
+	background-color: #F0E68C;
+	/* ホバー時の背景色 */
+}
+
 fieldset {
 	margin-top: 100px;
 	margin-left: auto;
@@ -72,4 +90,10 @@ input[type="password"] {
 	/* 入力フィールドの幅 */
 	padding: 10px;
 	/* 内側の余白 */
+}
+
+hr{
+    height: 5px;
+    width: 90%;
+    background-color: steelblue;
 }
