@@ -20,11 +20,9 @@ public class LoginService {
 	 * @param password
 	 * @return String
 	 */
-	public LoginUser getLoginUser(Integer userId, String password) {
+	public LoginUser getLoginUser(Integer userId) {
 		
-		System.out.println(loginMapper.getLoginUser(userId,password));
-		
-		return loginMapper.getLoginUser(userId, password);
+		return loginMapper.getLoginUser(userId);
 	}
 
 }
