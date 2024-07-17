@@ -1,14 +1,11 @@
 package com.example.demo.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
 
-import com.example.demo.dto.LoginUserDto;
+import com.example.demo.entity.LoginUser;
 
-@Component
+
 @Mapper
 public interface LoginMapper {
 	
@@ -20,6 +17,6 @@ public interface LoginMapper {
 	 * 
 	 * @return ログイン情報エンティティ
 	 */
-	List<LoginUserDto> getLoginUser(@Param("userId") Integer userId, @Param("password") String password);
+	LoginUser getLoginUser(@Param("userId") Integer userId, @Param("password") String password);
 
 }
