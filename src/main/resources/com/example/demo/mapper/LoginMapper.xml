@@ -3,16 +3,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.LoginMapper">
 
-	<select id="getLoginUser" resultType="com.example.demo.dto.LoginUserDto">
-		SELECT
-			user_id,
-			password,
-			name,
-			role,
-			start_date,
-			department_id
-		FROM
-			users
+	<select id="getLoginUser" resultType="com.example.demo.entity.LoginUser">
+		SELECT *
+		FROM users
 		WHERE
 			users.user_id = #{userId}
 			AND users.password = #{password}
