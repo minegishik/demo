@@ -50,15 +50,14 @@ table {
   margin-bottom: 20px;
 }
 
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td {
-    padding: 8px;
-    line-height: 1.42857143;
-    vertical-align: top;
+th, td {
+	padding: 12px;
+	text-align: center;
+}
+
+ .table th,
+.table td {
+   vertical-align: middle;
     border-top: 1px solid #ddd;
 }
 
@@ -70,13 +69,14 @@ table {
 	width: 140px;
 }
 
-.w160 {
+.w160,
+.w160 th,
+.w160 td {
 	width: 160px;
-	text-align: center;
 }
 
-.w250 {
-	width: 250px;
+.w200 {
+	width: 200px;
 }
 
 
@@ -118,6 +118,23 @@ table {
 	/* ホバー時の背景色 */
 }
 
+.btn-mgmt-regist {
+	margin: 30px;
+	padding: 6px 25px;
+	/* パディング */
+	background-color: #DCDCDC;
+	/* ボタンの背景色 */
+	color: #fff;
+	/* テキストの色 */
+	border: none;
+	/* ボーダーなし */
+	cursor: pointer;
+	border-radius: 10px;
+	position: absolute;
+	right: 500px;
+	bottom:350px;
+}
+
 .btn-default {
 	color: #ffffff;
 	background-color: #2fa4e7;
@@ -148,8 +165,6 @@ fieldset {
 .form-group {
 	display: flex;
 	margin-bottom: 1rem;
-	
-	
 }
 
 label {
