@@ -39,9 +39,8 @@ public class LoginController {
 	@PostMapping("/login")
 	public String login(@ModelAttribute LoginForm loginForm, Model model) {
 		
-		 LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId(),loginForm.getPassword());
+		 LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId());
 		
-		 System.out.println(loginUser);
 		 
 		 if (loginUser != null) {
 		        // ログイン成功時の処理
