@@ -1,5 +1,85 @@
 @charset "UTF-8";
 
+body {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+}
+
+
+.container {
+	justify-content: center;
+	align-items: center;
+	height: 100%
+	;
+}
+.component {
+	justify-content: center;
+	display: flex;
+}
+
+.component p {
+	margin-right: 100px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
+
+table {
+  background-color: transparent;
+}
+
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+
+  .w60 {
+	width: 60px;
+}
+
+.w140 {
+	width: 140px;
+}
+
+.w160 {
+	width: 160px;
+	text-align: center;
+}
+
+.w250 {
+	width: 250px;
+}
+
+
 .btn-login {
 	margin: 0 auto;
 	padding: 15px 100px;
@@ -11,6 +91,7 @@
 	border: none;
 	/* ボーダーなし */
 	cursor: pointer;
+	border-radius: 10px;
 }
 
 .btn-login:hover {
@@ -29,12 +110,23 @@
 	border: none;
 	/* ボーダーなし */
 	cursor: pointer;
+	border-radius: 10px;
 }
 
 .btn-mgmt:hover {
 	background-color: #F0E68C;
 	/* ホバー時の背景色 */
 }
+
+.btn-default {
+	color: #ffffff;
+	background-color: #2fa4e7;
+	border-color: #2fa4e7; 
+	padding: 10px 30px;
+	font-size: 16px;
+	border-radius: 10px;
+}
+
 
 fieldset {
 	margin-top: 100px;
