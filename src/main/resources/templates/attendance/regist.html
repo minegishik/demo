@@ -2,11 +2,111 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link th:href="@{/css/style.css}" rel="stylesheet" />
+<style>
+	.time-selectors {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
+
+	.time-selectors select {
+		width: 90px;
+		padding: 10px;
+		font-size: 1em;
+		border-radius: 10px;
+		margin-right: 5px;
+	}
+
+	.form-control{
+		width: 150px;
+		padding: 10px 20px;
+		font-size: 1em;
+		border-radius: 10px;
+		text-align: center;
+	}
+</style>
+
 <title>勤怠登録画面</title>
 </head>
 <body>
 	
-	ログイン画面からの遷移先
+	<script th:src="@{/js/attendance.js}"></script>
+	<div class="container">
+	
+		<div class="component">
+			<p>ユーザ名: </p>
+			<p>ユーザID: </p>
+		</div>
+		
+		<div style="display: flex; align-items: center;">
+        
+        <label>表示年月：</label>
+        <select id="year">
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <!-- 必要な年を適宜追加 -->
+        </select>
+        <p for="year">年</p>
 
+        
+        <select id="month">
+            <option value="1">1月</option>
+            <option value="2">2月</option>
+            <option value="3">3月</option>
+            <option value="4">4月</option>
+            <option value="5">5月</option>
+            <option value="6">6月</option>
+            <option value="7">7月</option>
+            <option value="8">8月</option>
+            <option value="9">9月</option>
+            <option value="10">10月</option>
+            <option value="11">11月</option>
+            <option value="12">12月</option>
+        </select>
+        <p for="month">月</p>
+
+        <button onclick="displayAttendance()">表示</button>
+    </div>
+
+		
+		<div style="display: flex; justify-content: flex-end;">
+			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
+			</form>
+			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+				<input type="submit" value="登録" class="btn btn-mgmt" />
+			</form>
+		</div>
+	
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th class="w60">日付</th>
+					<th class="w60">曜日</th>
+					<th class="w140">勤務状況</th>
+					<th class="w160">出勤時間</th>
+					<th class="w160">退勤時間</th>
+					<th class="w200">備考</th>
+				</tr>
+			</thead>
+			<tbody  id="attendanceTableBody" style="overflow-y: scroll; height: 560px;">
+				<tr>
+					<td class="w60"></td>
+					<td class="w60"></td>
+					<td class="w140"></td>
+					<td class="w160">
+						 <div class="time-selectors" id="startTimeDiv"></div>
+					</td>
+					<td class="w160">
+						<div class="time-selectors" id="endTimeDiv"></div>
+					</td>
+					<td class="w200"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
 </body>
 </html>
