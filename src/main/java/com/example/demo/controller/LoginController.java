@@ -37,14 +37,25 @@ public class LoginController {
 	 * @return 勤怠登録画面
 	 */
 	@PostMapping("/login")
-	public String login (Model model) {
+	public String login(@ModelAttribute LoginForm loginForm, Model model) {
 		
-		 LoginUser loginUser = (LoginUser) loginService.getLoginUser();
+		 LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId(),loginForm.getPassword());
 		
-		 model.addAttribute("loginUser", loginUser);
-		 
 		 System.out.println(loginUser);
-		return "attendance/regist";
+		 
+		 if (loginUser != null) {
+		        // ログイン成功時の処理
+		        model.addAttribute("loginUser", loginUser);
+		        return "attendance/regist";  // ログイン後の画面に遷移
+		    } else {
+		        // ログイン失敗時の処理
+		        model.addAttribute("error", "ログインに失敗しました。ユーザーIDとパスワードを確認してください。");
+		        return "login/index";  // ログイン画面に戻るなど、エラー処理
+		    }
+		 
+		
 	}
+	
+	
 
 }
