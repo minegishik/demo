@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
@@ -8,7 +9,7 @@ import lombok.Data;
 
 @Component
 @Data
-public class LoginUserDto {
+public class LoginUserDto implements Serializable{
 
 	//ユーザーID
 	private Integer userId;
