@@ -13,10 +13,9 @@ public interface LoginMapper {
 	 * ログイン情報取得
 	 * 
 	 * @param userId
-	 * @param password
 	 * 
 	 * @return ログイン情報エンティティ
 	 */
-	LoginUser getLoginUser(@Param("userId") Integer userId, @Param("password") String password);
+	LoginUser getLoginUser(@Param("userId") Integer userId);
 
 }
