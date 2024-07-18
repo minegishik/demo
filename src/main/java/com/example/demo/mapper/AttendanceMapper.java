@@ -1,5 +1,45 @@
 package com.example.demo.mapper;
 
-public class AttendanceMapper {
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.example.demo.dto.AttendanceDto;
+import com.example.demo.entity.AttendanceUser;
+
+@Mapper
+public interface AttendanceMapper {
+	
+	/**
+	 * 勤怠情報取得
+	 * 
+	 * @param userId
+	 * 
+	 * @return 勤怠情報エンティティ
+	 */
+	List<AttendanceUser> findByAttendanceUserId(@Param("userId") Integer userId);
+	
+	/**
+	 * 勤怠情報取得（ユーザーID＆日付）
+	 * 
+	 * @param userId
+	 * @param date
+	 * 
+	 * @return 勤怠情報エンティティ
+	 */
+	
+	AttendanceUser findByAttendanceDate(
+			@Param("userId") Integer userId,@Param("date") Date date);
+	
+	
+	/**
+	 * 勤怠登録画面用DTOリスト取得
+	 * 
+	 * @param userId
+	 * @return 勤怠登録画面用DTOリスト
+	 */
+	List<AttendanceDto> getAttendanceInfo(@Param("userId") Integer userId);
 
 }
