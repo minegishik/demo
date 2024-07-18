@@ -1,6 +1,9 @@
 /**
  * 勤怠機能
  * 
+ * @param year 年
+ * @param month 月
+ * 
  */
 // JavaScriptで月の日数を計算する関数
 function daysInMonth(year, month) {
@@ -26,13 +29,13 @@ function displayAttendance() {
 
 		// 月日セルを作成
 		var dateCell = document.createElement("td");
-		dateCell.classList.add("w60");
+		dateCell.classList.add("w40");
 		dateCell.textContent = month + "/" + day;
 		row.appendChild(dateCell);
 
 		// 曜日セルを作成
 		var weekdayCell = document.createElement("td");
-		weekdayCell.classList.add("w60");
+		weekdayCell.classList.add("w40");
 		var date = new Date(year, month - 1, day);
 		var weekday = weekdays[date.getDay()]; // 0が日曜なので -1する
 		weekdayCell.textContent = weekday;
@@ -41,26 +44,42 @@ function displayAttendance() {
 
 		// 勤務状況セル
 		var attendanceCell = document.createElement("td");
-		attendanceCell.classList.add("w140");
+		attendanceCell.classList.add("w100");
 		var select = document.createElement("select");
 		select.classList.add("form-control");
+		
+		// 勤務状況のオプションと対応する数値
 		var options = [
-			"通常出勤", "休日", "祝日", "遅刻", "有給",
-			"欠勤", "早退", "時間外勤務", "振替出勤",
-			"振替休日", "代替出勤", "代替休日"
+			{ value: "", text: "選択してください" },
+			{ value: 0, text: "通常出勤" },
+			{ value: 1, text: "休日" },
+			{ value: 2, text: "祝日" },
+			{ value: 3, text: "遅刻" },
+			{ value: 4, text: "有給" },
+			{ value: 5, text: "欠勤" },
+			{ value: 6, text: "早退" },
+			{ value: 7, text: "時間外勤務" },
+			{ value: 8, text: "振替出勤" },
+			{ value: 9, text: "振替休日" },
+			{ value: 10, text: "代替出勤" },
+			{ value: 11, text: "代替休日" }
 		];
+		
+		
+		
 		for (var i = 0; i < options.length; i++) {
 			var option = document.createElement("option");
-			option.value = i;
-			option.textContent = options[i];
+			option.value = options[i].value;
+			option.textContent = options[i].text;
 			select.appendChild(option);
 		}
+		
 		attendanceCell.appendChild(select);
 		row.appendChild(attendanceCell);
 
 		// 出勤時間セル
 		var startTimeCell = document.createElement("td");
-		startTimeCell.classList.add("w160");
+		startTimeCell.classList.add("w120");
 		var startTimeDiv = document.createElement("div");
 		startTimeDiv.classList.add("time-selectors");
 
@@ -80,7 +99,7 @@ function displayAttendance() {
 		var startMinuteSelect = document.createElement("select");
 		startMinuteSelect.classList.add("form-control");
 		startMinuteSelect.name = "startMinute"; // 分の選択肢の名前
-		for (var minute = 0; minute < 60; minute += 15) {
+		for (var minute = 0; minute < 60; minute++) {
 			var option = document.createElement("option");
 			var minuteString = ("0" + minute).slice(-2);
 			option.value = minuteString;
@@ -97,7 +116,7 @@ function displayAttendance() {
 
 		// 退勤時間セル
 		var endTimeCell = document.createElement("td");
-		endTimeCell.classList.add("w160");
+		endTimeCell.classList.add("w120");
 		var endTimeDiv = document.createElement("div");
 		endTimeDiv.classList.add("time-selectors");
 
@@ -117,7 +136,7 @@ function displayAttendance() {
 		var endMinuteSelect = document.createElement("select");
 		endMinuteSelect.classList.add("form-control");
 		endMinuteSelect.name = "endMinute"; // 分の選択肢の名前
-		for (var minute = 0; minute < 60; minute += 15) {
+		for (var minute = 0; minute < 60; minute++) {
 			var option = document.createElement("option");
 			var minuteString = ("0" + minute).slice(-2);
 			option.value = minuteString;
@@ -135,16 +154,17 @@ function displayAttendance() {
 
 		// 備考セル
 		var remarksCell = document.createElement("td");
-		remarksCell.classList.add("w200");
+		remarksCell.classList.add("w150");
 
 		// テキストボックスの作成
 		var remarksInput = document.createElement("input");
 		remarksInput.type = "text";
 		remarksInput.classList.add("form-control");
-		remarksInput.placeholder = "備考を入力してください";
 
 		remarksCell.appendChild(remarksInput);
 		row.appendChild(remarksCell);
+		
+		
 
 		tableBody.appendChild(row);
 	}

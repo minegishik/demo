@@ -36,9 +36,11 @@
 	<div class="container">
 	
 		<div class="component">
-			<p>ユーザ名: </p>
-			<p>ユーザID: </p>
+			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
+			<p>ユーザID: <span th:text="${loginUser.userId}"></span></p>
+			<p>ステータス:</p>
 		</div>
+		
 		
 		<div style="display: flex; align-items: center;">
         
@@ -73,36 +75,61 @@
 		
 		<div style="display: flex; justify-content: flex-end;">
 			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+				<input type="submit" value="却下" class="btn btn-mgmt" />
+			</form>
+			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+				<input type="submit" value="承認" class="btn btn-mgmt" />
+			</form>
+			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
 				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
 			</form>
 			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
 				<input type="submit" value="登録" class="btn btn-mgmt" />
 			</form>
 		</div>
+		
+		<table class="table data-table">
+			<thead>
+				<tr>
+					<th class="w150">承認申請者</th>
+					<th class="w120">申請対象年月</th>
+					<th class="w120">申請日</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="w150"></td>
+					<td class="w120"></td>
+					<td class="w120"></td>
+				</tr>
+			</tbody>
+		</table>
 	
 		<table class="table table-hover">
 			<thead>
 				<tr>
-					<th class="w60">日付</th>
-					<th class="w60">曜日</th>
-					<th class="w140">勤務状況</th>
-					<th class="w160">出勤時間</th>
-					<th class="w160">退勤時間</th>
-					<th class="w200">備考</th>
+					<th class="w40">日付</th>
+					<th class="w40">曜日</th>
+					<th class="w100">勤務状況</th>
+					<th class="w120">出勤時間</th>
+					<th class="w120">退勤時間</th>
+					<th class="w150">備考</th>
 				</tr>
 			</thead>
-			<tbody  id="attendanceTableBody" style="overflow-y: scroll; height: 560px;">
+			<tbody  id="attendanceTableBody" style="overflow-y: scroll;"  th:each="attendanceDto : ${attendanceDtoList}" th:object="${attendanceDto}">
 				<tr>
-					<td class="w60"></td>
-					<td class="w60"></td>
-					<td class="w140"></td>
-					<td class="w160">
+					<td class="w40">[[${#dates.format(attendanceDto.date, "M/d")}]]</td>
+					<td class="w40">[[${#dates.format(attendanceDto.date, "E")}]]</td>
+					<td class="w100" th:text="${attendanceDto.status}"></td>
+					<td class="w120">
+						<span th:text="${@attendanceService.formatTimeToHHMM(attendanceDto.startTime)}"></span>
 						 <div class="time-selectors" id="startTimeDiv"></div>
 					</td>
-					<td class="w160">
+					<td class="w120">
+						<span th:text="${@attendanceService.formatTimeToHHMM(attendanceDto.endTime)}"></span>
 						<div class="time-selectors" id="endTimeDiv"></div>
 					</td>
-					<td class="w200"></td>
+					<td class="w150" th:text="${attendanceDto.remarks}"></td>
 				</tr>
 			</tbody>
 		</table>

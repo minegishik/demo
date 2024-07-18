@@ -45,9 +45,10 @@ table {
 }
 
 .table {
-  width: 100%;
-  max-width: 100%;
-  margin-bottom: 20px;
+	margin: 0 auto;
+	font-size: 12px;
+    width: 70%;
+    margin-bottom: 20px;
 }
 
 th, td {
@@ -61,22 +62,25 @@ th, td {
     border-top: 1px solid #ddd;
 }
 
-  .w60 {
-	width: 60px;
+  .w40 {
+	width: 40px;
 }
 
-.w140 {
-	width: 140px;
+.w100 {
+	width: 100px;
 }
 
-.w160,
-.w160 th,
-.w160 td {
-	width: 160px;
+.w120,
+.w120 th,
+.w120 td {
+	width: 120px;
 }
 
-.w200 {
-	width: 200px;
+
+.w150,
+.w150 th,
+.w150 td {
+	width: 150px;
 }
 
 
@@ -130,9 +134,7 @@ th, td {
 	/* ボーダーなし */
 	cursor: pointer;
 	border-radius: 10px;
-	position: absolute;
-	right: 500px;
-	bottom:350px;
+	justify-content: flex-end !important;
 }
 
 .btn-default {
