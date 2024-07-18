@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.AttendanceMapper">
+
+	<select id="findByAttendanceUserId" resultType="com.example.demo.entity.AttendanceUser">
+		SELECT  *
+		FROM attendance
+		WHERE user_id = #{userId}
+	</select>
+	
+	<select id="findByAttendanceDate" resultType="com.example.demo.entity.AttendanceUser">
+		SELECT *
+		FROM attendence
+		WHERE user_id = #{userId}
+			AND date = #{date}
+	</select>
+	
+	<select id="getAttendanceInfo" resultType="com.example.demo.dto.AttendanceDto">
+		SELECT *
+		FROM attendance
+		WHERE user_id = #{userId}
+	</select>
 
 </mapper>
