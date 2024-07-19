@@ -41,5 +41,16 @@ public interface AttendanceMapper {
 	 * @return 勤怠登録画面用DTOリスト
 	 */
 	List<AttendanceDto> getAttendanceInfo(@Param("userId") Integer userId);
+	
+	/**
+	 * 勤怠情報年月の取得
+	 * 
+	 * @param userId
+	 * @param year
+	 * @param month
+	 * 
+	 * @return 
+	 */
+	List<AttendanceDto>findByAttendanceYearMonth(@Param("userId") Integer userId, @Param("year") int year, @Param("month") int month);
 
 }
