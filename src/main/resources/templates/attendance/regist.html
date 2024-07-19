@@ -10,7 +10,7 @@
 		align-items: center;
 		height: 100%;
 	}
-
+ 
 	.time-selectors select {
 		width: 90px;
 		padding: 10px;
@@ -18,7 +18,7 @@
 		border-radius: 10px;
 		margin-right: 5px;
 	}
-
+ 
 	.form-control{
 		width: 150px;
 		padding: 10px 20px;
@@ -27,7 +27,7 @@
 		text-align: center;
 	}
 </style>
-
+ 
 <title>勤怠登録画面</title>
 </head>
 <body>
@@ -51,7 +51,7 @@
             <!-- 必要な年を適宜追加 -->
         </select>
         <p for="year">年</p>
-
+ 
         
         <select id="month">
             <option value="1">1月</option>
@@ -68,10 +68,10 @@
             <option value="12">12月</option>
         </select>
         <p for="month">月</p>
-
+ 
         <button onclick="displayAttendance()">表示</button>
     </div>
-
+ 
 		
 		<div style="display: flex; justify-content: flex-end;">
 			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
