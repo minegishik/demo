@@ -18,5 +18,6 @@ public class AttendanceUser {
 		private Time startTime;
 		//退勤時間
 		private Time endTime;
+		
 
 }
