@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,13 +39,9 @@ public class LoginController {
 	 * @return 勤怠登録画面
 	 */
 	@PostMapping("/login")
-	public String login(@ModelAttribute LoginForm loginForm, BindingResult bindingResult, Model model, HttpSession session) {
+	public String login(@ModelAttribute LoginForm loginForm, Model model, HttpSession session) {
 		
-		// 入力チェック
-	    if (bindingResult.hasErrors()) {
-	        // バインディングエラーがある場合の処理
-	        return "login/index";  // ログイン画面に戻るなどの処理
-	    }
+
 		
 		 LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId());
 		
@@ -56,7 +51,7 @@ public class LoginController {
 			 session.setAttribute("loginUser", loginUser);
 		        return "redirect:/attendance/regist";  // ログイン後の画面に遷移
 		    } else {
-		    	bindingResult.reject("login.error", "ユーザIDまたはパスワードが正しくありません。");
+		    	model.addAttribute("error", "ユーザIDまたはパスワードが正しくありません。");
 		        return "login/index";  // ログイン画面に戻るなど、エラー処理
 		    }
 		 
