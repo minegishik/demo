@@ -9,30 +9,30 @@
 function daysInMonth(year, month) {
 	return new Date(year, month, 0).getDate();
 }
-
+ 
 // 表示ボタンをクリックした際の処理
 function displayAttendance() {
 	var year = parseInt(document.getElementById("year").value);
 	var month = parseInt(document.getElementById("month").value);
 	var days = daysInMonth(year, month); // 月の日数を計算
-
+ 
 	var tableBody = document.getElementById("attendanceTableBody");
 	tableBody.innerHTML = ""; // テーブルの内容をクリア
-
+ 
 	// 曜日の配列
 	var weekdays = ["日", "月", "火", "水", "木", "金", "土"];
-
+ 
 	// テーブルに曜日と月日を追加
 	for (var day = 1; day <= days; day++) {
 		var row = document.createElement("tr");
-
-
+ 
+ 
 		// 月日セルを作成
 		var dateCell = document.createElement("td");
 		dateCell.classList.add("w40");
 		dateCell.textContent = month + "/" + day;
 		row.appendChild(dateCell);
-
+ 
 		// 曜日セルを作成
 		var weekdayCell = document.createElement("td");
 		weekdayCell.classList.add("w40");
@@ -40,8 +40,8 @@ function displayAttendance() {
 		var weekday = weekdays[date.getDay()]; // 0が日曜なので -1する
 		weekdayCell.textContent = weekday;
 		row.appendChild(weekdayCell);
-
-
+ 
+ 
 		// 勤務状況セル
 		var attendanceCell = document.createElement("td");
 		attendanceCell.classList.add("w100");
@@ -76,13 +76,13 @@ function displayAttendance() {
 		
 		attendanceCell.appendChild(select);
 		row.appendChild(attendanceCell);
-
+ 
 		// 出勤時間セル
 		var startTimeCell = document.createElement("td");
 		startTimeCell.classList.add("w120");
 		var startTimeDiv = document.createElement("div");
 		startTimeDiv.classList.add("time-selectors");
-
+ 
 		// 時間のプルダウン
 		var startHourSelect = document.createElement("select");
 		startHourSelect.classList.add("form-control");
@@ -94,7 +94,7 @@ function displayAttendance() {
 			option.textContent = hourString;
 			startHourSelect.appendChild(option);
 		}
-
+ 
 		// 分のプルダウン
 		var startMinuteSelect = document.createElement("select");
 		startMinuteSelect.classList.add("form-control");
@@ -106,20 +106,20 @@ function displayAttendance() {
 			option.textContent = minuteString;
 			startMinuteSelect.appendChild(option);
 		}
-
+ 
 		// プルダウンを追加
 		startTimeDiv.appendChild(startHourSelect);
 		startTimeDiv.appendChild(startMinuteSelect);
-
+ 
 		startTimeCell.appendChild(startTimeDiv);
 		row.appendChild(startTimeCell);
-
+ 
 		// 退勤時間セル
 		var endTimeCell = document.createElement("td");
 		endTimeCell.classList.add("w120");
 		var endTimeDiv = document.createElement("div");
 		endTimeDiv.classList.add("time-selectors");
-
+ 
 		// 時間のプルダウン
 		var endHourSelect = document.createElement("select");
 		endHourSelect.classList.add("form-control");
@@ -131,7 +131,7 @@ function displayAttendance() {
 			option.textContent = hourString;
 			endHourSelect.appendChild(option);
 		}
-
+ 
 		// 分のプルダウン
 		var endMinuteSelect = document.createElement("select");
 		endMinuteSelect.classList.add("form-control");
@@ -143,29 +143,29 @@ function displayAttendance() {
 			option.textContent = minuteString;
 			endMinuteSelect.appendChild(option);
 		}
-
+ 
 		// プルダウンを追加
 		endTimeDiv.appendChild(endHourSelect);
 		endTimeDiv.appendChild(endMinuteSelect);
-
+ 
 		endTimeCell.appendChild(endTimeDiv);
 		row.appendChild(endTimeCell);
-
-
+ 
+ 
 		// 備考セル
 		var remarksCell = document.createElement("td");
 		remarksCell.classList.add("w150");
-
+ 
 		// テキストボックスの作成
 		var remarksInput = document.createElement("input");
 		remarksInput.type = "text";
 		remarksInput.classList.add("form-control");
-
+ 
 		remarksCell.appendChild(remarksInput);
 		row.appendChild(remarksCell);
 		
 		
-
+ 
 		tableBody.appendChild(row);
 	}
-		}
+}
