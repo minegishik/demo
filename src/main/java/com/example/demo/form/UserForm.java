@@ -2,9 +2,12 @@ package com.example.demo.form;
 
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Data;
 
 @Data
+@Component
 public class UserForm {
 
 	//ユーザーID
