@@ -10,8 +10,9 @@ import com.example.demo.entity.Users;
 
 @Mapper
 public interface UserMapper {
-	
+
 	List<UsersDto> getAllUser();
+	
 	
 
 	/**
@@ -27,3 +28,9 @@ public interface UserMapper {
 	Boolean insertUserData(@Param("users") Users users);
 
 }
+// Users users
+
+
+//
+//@Param("name") String name, @Param("password") String password,
+//@Param("role") String role, @Param("startDate") Date startDate?
