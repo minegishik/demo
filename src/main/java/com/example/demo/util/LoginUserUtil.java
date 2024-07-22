@@ -3,23 +3,19 @@ package com.example.demo.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.dto.LoginUserDto;
+import com.example.demo.entity.LoginUser;
+
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class LoginUserUtil {
 	
-	@Autowired
-	private LoginUserDto loginUserDto;
-	
-	
-	/**
-	 * ログイン情報を取得
-	 * @return
-	 */
-	public LoginUserDto getLoginUserDto() {
-		
-		return loginUserDto;
-	}
+	 @Autowired
+	    private HttpSession session;
+
+	    public LoginUser getLoginUser() {
+	        return (LoginUser) session.getAttribute("loginUser");
+	    }
 
 	/**
 	 * ログインしているユーザーがシステム管理者か判定
@@ -27,7 +23,9 @@ public class LoginUserUtil {
 	 * @return 管理者の場合　true
 	 *  */
 	public boolean isAdmin() {
-		return Constants.CODE_VAL_ROLL_ADMIN.equals(getLoginUserDto().getRole());
+		LoginUser loginUser = getLoginUser();
+		String userRole = loginUser.getRole();
+        return Constants.CODE_VAL_ROLL_ADMIN.equals(userRole);
 	}
 
 	/**
@@ -36,7 +34,9 @@ public class LoginUserUtil {
 	 * @return ユニットマネージャーの場合　true
 	 *  */
 	public boolean isUnitManager() {
-		return Constants.CODE_VAL_ROLL_UNITMANAGER.equals(getLoginUserDto().getRole());
+		LoginUser loginUser = getLoginUser();
+		String userRole = loginUser.getRole();
+		return Constants.CODE_VAL_ROLL_UNITMANAGER.equals(userRole);
 	}
 
 	/**
@@ -45,7 +45,9 @@ public class LoginUserUtil {
 	 * @return マネージャーの場合　true
 	 *  */
 	public boolean isManager() {
-		return Constants.CODE_VAL_ROLL_MANAGER.equals(getLoginUserDto().getRole());
+		LoginUser loginUser = getLoginUser();
+		String userRole = loginUser.getRole();
+		return Constants.CODE_VAL_ROLL_MANAGER.equals(userRole);
 	}
 
 	/**
@@ -54,7 +56,29 @@ public class LoginUserUtil {
 	 * @return 社員の場合　true
 	 *  */
 	public boolean isRegular() {
-		return Constants.CODE_VAL_ROLL_REGULAR.equals(getLoginUserDto().getRole());
+		LoginUser loginUser = getLoginUser();
+		String userRole = loginUser.getRole();
+		return Constants.CODE_VAL_ROLL_REGULAR.equals(userRole);
+	}
+	
+	/**
+	 * 遷移先画面の決定
+	 * 
+	 * @return 権限ごとの遷移先
+	 */
+	public String sendDisp() {
+		
+		if (isAdmin()) {
+		    return "redirect:/user/management"; // システム管理者はユーザー管理画面にリダイレクト
+		} else if (isUnitManager()) {
+		    return "redirect:/attendance/regist"; // ユニットマネージャーは勤怠登録画面にリダイレクト
+		} else if (isManager()) {
+		    return "redirect:/attendance/regist"; // マネージャーは勤怠登録画面にリダイレクト
+		} else if (isRegular()) {
+		    return "redirect:/attendance/regist"; // 社員は勤怠登録画面にリダイレクト
+		} else {
+		    return "redirect:/login/index"; // その他の権限があればログイン画面にリダイレクト
+		}
 	}
 	
 }
