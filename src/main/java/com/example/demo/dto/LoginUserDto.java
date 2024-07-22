@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import lombok.Data;
 
 @Component
+@SessionScope
 @Data
 public class LoginUserDto implements Serializable{
 
