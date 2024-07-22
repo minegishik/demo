@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.example.demo.entity.LoginUser;
 import com.example.demo.form.LoginForm;
 import com.example.demo.service.LoginService;
+import com.example.demo.util.LoginUserUtil;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,10 +20,13 @@ public class LoginController {
 	
 	@Autowired
 	private LoginService loginService;
+	@Autowired
+	private LoginUserUtil loginUserUtil;
+	
+	
 	
 	/**
 	 * ログイン画面 初期表示
-	 * 
 	 * @return ログイン画面
 	 */
 	@RequestMapping("")
@@ -41,23 +45,18 @@ public class LoginController {
 	@PostMapping("/login")
 	public String login(@ModelAttribute LoginForm loginForm, Model model, HttpSession session) {
 		
+		LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId());
 
-		
-		 LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId());
-		
-		 
-		 if (loginUser != null && loginUser.getPassword().equals(loginForm.getPassword())) {
-		        // ログイン成功時の処理
-			 session.setAttribute("loginUser", loginUser);
-		        return "redirect:/attendance/regist";  // ログイン後の画面に遷移
-		    } else {
-		    	model.addAttribute("error", "ユーザIDまたはパスワードが正しくありません。");
-		        return "login/index";  // ログイン画面に戻るなど、エラー処理
-		    }
-		 
-		
+		if (loginUser != null && loginUser.getPassword().equals(loginForm.getPassword())) {
+	        // ログイン成功時の処理
+	        session.setAttribute("loginUser", loginUser);// ログインユーザー情報をセッションに保存
+
+	        // ログイン後の初期画面にリダイレクト
+	        return loginUserUtil.sendDisp();
+	    } else {
+	    	model.addAttribute("error", "※ユーザIDとパスワードが一致しません。");
+		return "/login/index";
+	    }
 	}
-	
-	
 
 }
