@@ -15,14 +15,15 @@
 			AND date = #{date}
 	</select>
 	
-	<select id="getAttendanceInfo" resultType="com.example.demo.dto.AttendanceDto">
-		SELECT *
-		FROM attendance
-		WHERE user_id = #{userId}
-	</select>
 	
 	<select id="findByAttendanceYearMonth" resultType="com.example.demo.dto.AttendanceDto">
-    SELECT *
+    SELECT
+    	user_id as userId,
+    	status,
+    	date,
+    	start_time as startTime,
+    	end_time as endTime,
+    	remarks
     FROM attendance
     WHERE user_id = #{userId}
       AND YEAR(date) = #{year}
