@@ -10,7 +10,9 @@ import lombok.Data;
 @Component
 @Data
 public class AttendanceUser {
-	
+
+	//勤怠ID
+	private Integer attendanceId;
 	//ユーザーID
 	private Integer userId;
 	//勤務状況
@@ -23,8 +25,21 @@ public class AttendanceUser {
 	private Time endTime;
 	//備考
 	private String remarks;
-	//勤怠ID
-	private Integer attendanceId;
-		
+	//フォーマット変更した月日
+	private String formattedDate;
+	//フォーマット変更した曜日
+	private String formattedWeek;
+	
+	// コンストラクタ
+    public AttendanceUser() {
+        // デフォルトコンストラクタ
+    }
+    
+
+    // 日付をDate型で取得するメソッド
+    public Date getDate() {
+        return date;
+    }
+
 
 }
