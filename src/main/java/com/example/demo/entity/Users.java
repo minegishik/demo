@@ -1,7 +1,5 @@
 package com.example.demo.entity;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
@@ -15,8 +13,11 @@ public class Users {
 	//権限
 	private String role;
 	//作成日
-	private Date startDate;
+	private String startDate;
 	//部署ID
 	private Integer departmentId;
 
 }
+
+
+// StartDate … String型
