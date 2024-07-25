@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.UserMapper">
 
-	<select id="getAllUser" resultType="com.example.demo.dto.UsersDto">
+	<select id="getAllUser"
+		resultType="com.example.demo.dto.UsersDto">
 		SELECT
 		user_id,
 		password,
@@ -41,17 +42,27 @@
 	</update>
 
 	<insert id="insertUserData" useGeneratedKeys="true"
-		parameterType="com.example.demo.entity.Users" keyProperty="userId">
+		parameterType="com.example.demo.entity.Users" >
 		INSERT
 		INTO
 		users
-		(userId, password, name, role, startDate,
-		departmentId)
+		(name, user_id, password, role, start_date)
 		VALUES
-		(#{userId}, #{password}, #{name}, #{role},
-		#{startDate});
+		(#{name},
+		#{userId}, #{password}, #{role}, #{startDate});
 
 	</insert>
+
+
+	<delete id="deleteUserData"
+		parameterType="com.example.demo.entity.Users">
+		DELETE
+		FROM
+		users
+		WHERE
+		user_id = #{userId};
+
+	</delete>
 
 
 </mapper>
