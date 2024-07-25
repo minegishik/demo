@@ -1,7 +1,6 @@
 package com.example.demo.form;
 
-import java.util.Date;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
@@ -19,8 +18,12 @@ public class UserForm {
 	//権限
 	private String role;
 	//作成日
-	private Date startDate;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private String startDate;
 	//部署ID
 	private Integer departmentId;
-
+	
 }
+	
+
+
