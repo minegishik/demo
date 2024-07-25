@@ -1,8 +1,6 @@
 package com.example.demo.dto;
 
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
@@ -13,8 +11,10 @@ import lombok.Data;
 @Data
 public class AttendanceDto {
 	
+	//勤怠ID
+	private Integer attendanceId;
 	//ユーザーID
-	private Integer userId;
+	private int userId;
 	//勤務状況
 	private Short status;
 	//日付
@@ -25,10 +25,9 @@ public class AttendanceDto {
 	private Time endTime;
 	//備考
 	private String remarks;
-	
-	// getDate() が返す java.sql.Date を LocalDate に変換するメソッド
-    public LocalDate getLocalDate() {
-        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
+	//フォーマット変更した月日
+	private String formattedDate;
+	//フォーマット変更した曜日
+	private String formattedWeek;
 
 }
