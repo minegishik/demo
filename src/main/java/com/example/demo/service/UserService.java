@@ -1,9 +1,14 @@
 package com.example.demo.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import com.example.demo.dto.UsersDto;
 import com.example.demo.entity.Users;
@@ -42,56 +47,126 @@ public class UserService {
 		return userData;
 	}
 
-	public String inputCheck(UserForm userForm) {
-		////
-		if (userForm.getName() == null || userForm.getName().isEmpty() ||
-				userForm.getPassword() == null || userForm.getPassword().isEmpty() ||
-				userForm.getRole() == null || userForm.getRole().isEmpty() ||
-				userForm.getStartDate() == null) {
-
-			String errorMessage = "全ての項目を入力してください。";
-			return errorMessage;
-		}
-		return "";
-	}
-
-	public String setUser(UserForm userForm) {
+	public String settingUser(UserForm userForm, Users user) {
 		// 既存ユーザーか新規ユーザーか判別する
 		Users existingUser = userMapper.findUserDataByUserName(userForm.getName());
 
 		Users newUser = new Users();
 
+		// 新規ユーザーだった場合
 		if (existingUser == null) {
 			//	新規ユーザー登録
 			newUser = new Users();
-			newUser.setName(usersDto.getName());
-			newUser.setPassword(usersDto.getPassword());
-			newUser.setRole(usersDto.getRole());
-			newUser.setStartDate(usersDto.getStartDate());
-			userMapper.insertUserData(newUser);
+			newUser.setName(userForm.getName());
+			newUser.setPassword(userForm.getPassword());
+			newUser.setRole(userForm.getRole());
+			newUser.setStartDate(userForm.getStartDate());
+			userMapper.insertUserData(userForm.getName(), userForm.getUserId(), userForm.getPassword(),
+					userForm.getRole(), userForm.getStartDate());
 
-			String registerMessage = "登録が完了しました。";
-			return registerMessage;
-
+			return userForm.getName() + "を登録しました。";
 		} else {
-			// ユーザー情報更新
-			existingUser.setName(usersDto.getName());
-			existingUser.setPassword(usersDto.getPassword());
-			existingUser.setRole(usersDto.getRole());
-			existingUser.setStartDate(usersDto.getStartDate());
-			userMapper.updateUserData(existingUser);
+			if (userForm.getPassword() != existingUser.getPassword() || userForm.getRole() != existingUser.getRole()
+					|| userForm.getStartDate() != existingUser.getStartDate()) {
 
-			String updateMessage = "更新しました。";
-			return updateMessage;
+				// ユーザー情報更新
+				existingUser.setName(userForm.getName());
+				existingUser.setPassword(userForm.getPassword());
+				existingUser.setRole(userForm.getRole());
+				existingUser.setStartDate(userForm.getStartDate());
+				userMapper.updateUserData(userForm.getName(), userForm.getUserId(), userForm.getPassword(),
+						userForm.getRole(), userForm.getStartDate());
+
+				return userForm.getName() + "の情報を更新しました。";
+
+			}
+			return "";
 		}
+	}
+	
+	
+	public String validateSearch(UserForm userForm, BindingResult result) {
+		if (userForm.getName() == null || userForm.getName().isEmpty()) {
+			result.addError(new FieldError("name", "name", "※ユーザー名: 入力してください。"));
+		}
+
+		// ユーザー名が不正(文字数、全角の制限)だった場合
+		if (userForm.getName() != null && 20 < userForm.getName().length()) {
+			result.addError(new FieldError("name", "name", "※ユーザー名: 全角20文字以内で入力してください。"));
+		}
+		return "";
+	}
+
+	// Validate
+	public String validateRegist(UserForm userForm, BindingResult result) {
+		// 検索時にユーザーが存在しなかった場合
+		//		if (userForm.getName() != null || userForm.getName() != user.getName()) {
+		//			result.rejectValue("search", "error.search", "存在しないユーザーです。");
+		//		}
+		
+		// ユーザー名がNullだった場合
+		if (userForm.getName() == null || userForm.getName().isEmpty()) {
+			result.rejectValue("name", "name", "※ユーザー名: 入力してください。");
+		}
+
+		// ユーザー名が不正(文字数、全角の制限)だった場合
+		if (userForm.getName() != null && 20 < userForm.getName().length()) {
+			result.rejectValue("name", "name", "※ユーザー名: 全角20文字以内で入力してください。");
+		}
+
+		// パスワードがNullだった場合
+		if (userForm.getPassword() == null || userForm.getPassword().isEmpty()) {
+			result.rejectValue("password", "password", "※パスワード: 入力してください。");
+		}
+
+		// パスワードが不正(17桁以上)だった場合
+		if (userForm.getPassword() != null && 16 < userForm.getPassword().length()) {
+			result.rejectValue("password", "password", "※パスワード: 桁数は16桁以下で入力してください。");
+		}
+
+		// 権限が"未選択"だった場合
+		if (userForm.getRole() == null || userForm.getRole().equals("select")) {
+			result.rejectValue("role", "role", "※権限: 存在しない権限です。");
+		}
+		// 利用開始日の形式が間違いだった場合
+		if (!isValidDate(userForm.getStartDate())) {
+			result.rejectValue("startDate", "startDate", "※利用開始日: yyyy-MM-dd のフォーマットで入力してください。");
+		}
+		return "";
 
 	}
 
-	//	public Boolean insertUserData(Users users) {
-	//		return userMapper.insertUserData(users);
-	//	}
-	//
-	//	public Boolean updateUserData(Users users) {
-	//		return userMapper.updateUserData(users);
-	//	}
+	// ユーザーの削除条件
+	public String deleteUser(UserForm userForm, Users user) {
+		if (user != null && "9999-99-99".equals(userForm.getStartDate())) {
+			userMapper.deleteUserData(user.getUserId());
+
+		}
+		return "";
+
+	}
+
+	private boolean isValidDate(String dateStr) {
+		if (dateStr.equals("9999-99-99")) {
+			return true; // 特定の日付"9999-99-99"を有効として扱う
+		}
+		try {
+			LocalDate parsedDate = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+			return true;
+		} catch (DateTimeParseException e) {
+			return false;
+		}
+
+	}
 }
+
+// ユーザーIDが重複している場合
+//		if (userForm.getUserId() != null && userForm.getUserId() == user.getUserId()) {
+//			if (userForm.getName() != user.getName() || userForm.getPassword() != user.getPassword()
+//					|| userForm.getStartDate() != user.getStartDate()) {
+//				userMapper.updateUserData(user);
+//			} else {
+//				result.rejectValue("userId", "error.userId", "ユーザーID: 既に使用されています。");
+//			}
+//		}
