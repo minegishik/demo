@@ -25,5 +25,9 @@ public class AttendanceDto {
 	private Time endTime;
 	//備考
 	private String remarks;
+	//フォーマット変更した月日
+	private String formattedDate;
+	//フォーマット変更した曜日
+	private String formattedWeek;
 
 }
