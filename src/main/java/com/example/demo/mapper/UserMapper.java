@@ -23,14 +23,10 @@ public interface UserMapper {
 	 */
 	Users findUserDataByUserName(@Param("name") String name);
 
-	Boolean updateUserData(@Param("users") Users users);
-
-	Boolean insertUserData(@Param("users") Users users);
+	Boolean updateUserData(@Param("name") String name, @Param("userId") Integer userId, @Param("password") String password,@Param("role") String role, @Param("startDate") String startDate);
+	
+	void insertUserData(@Param("name") String name, @Param("userId") Integer userId, @Param("password") String password,@Param("role") String role, @Param("startDate") String startDate);
+	
+	void deleteUserData(@Param("userId") Integer userId);
 
 }
-// Users users
-
-
-//
-//@Param("name") String name, @Param("password") String password,
-//@Param("role") String role, @Param("startDate") Date startDate?
