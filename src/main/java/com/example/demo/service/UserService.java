@@ -47,6 +47,13 @@ public class UserService {
 		return userData;
 	}
 
+	/**
+	 * 
+	 *  登録・更新の処理
+	 * @param userForm
+	 * @param user
+	 * @return
+	 */
 	public String settingUser(UserForm userForm, Users user) {
 		// 既存ユーザーか新規ユーザーか判別する
 		Users existingUser = userMapper.findUserDataByUserName(userForm.getName());
@@ -84,6 +91,13 @@ public class UserService {
 		}
 	}
 
+	/**
+	 * 
+	 *  検索時の入力チェック項目
+	 * @param userForm
+	 * @param result
+	 * @return
+	 */
 	public String validateSearch(UserForm userForm, BindingResult result) {
 		if (userForm.getName() == null || userForm.getName().isEmpty()) {
 			result.addError(new FieldError("name", "name", "※ユーザー名: 入力してください。"));
@@ -95,13 +109,14 @@ public class UserService {
 		return "";
 	}
 
-	// Validate
+	/**
+	 * 
+	 *  登録時の入力チェック項目
+	 * @param userForm
+	 * @param result
+	 * @return
+	 */
 	public String validateRegist(UserForm userForm, BindingResult result) {
-		// 検索時にユーザーが存在しなかった場合
-		//		if (userForm.getName() != null || userForm.getName() != user.getName()) {
-		//			result.rejectValue("search", "error.search", "存在しないユーザーです。");
-		//		}
-
 		// ユーザー名がNullだった場合
 		if (userForm.getName() == null || userForm.getName().isEmpty()) {
 			result.rejectValue("name", "name1", "※ユーザー名: 入力してください。");
@@ -138,7 +153,13 @@ public class UserService {
 
 	}
 
-	// ユーザーの削除条件
+	/**
+	 * 
+	 *  ユーザーの削除条件
+	 * @param userForm
+	 * @param user
+	 * @return
+	 */
 	public String deleteUser(UserForm userForm, Users user) {
 		if (user != null && "9999-99-99".equals(userForm.getStartDate())) {
 			userMapper.deleteUserData(user.getUserId());
@@ -148,6 +169,12 @@ public class UserService {
 
 	}
 
+	/**
+	 * 
+	 *  
+	 * @param dateStr
+	 * @return
+	 */
 	private boolean isValidDate(String dateStr) {
 		if (dateStr.equals("9999-99-99")) {
 			return true; // 特定の日付"9999-99-99"を有効として扱う
@@ -163,12 +190,3 @@ public class UserService {
 	}
 }
 
-// ユーザーIDが重複している場合
-//		if (userForm.getUserId() != null && userForm.getUserId() == user.getUserId()) {
-//			if (userForm.getName() != user.getName() || userForm.getPassword() != user.getPassword()
-//					|| userForm.getStartDate() != user.getStartDate()) {
-//				userMapper.updateUserData(user);
-//			} else {
-//				result.rejectValue("userId", "error.userId", "ユーザーID: 既に使用されています。");
-//			}
-//		}
