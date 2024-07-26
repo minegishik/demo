@@ -50,7 +50,7 @@ public interface AttendanceMapper {
 	 * 勤怠情報登録
 	 * 
 	 * @param attendanceUser
-	 * @return 更新結果
+	 * @return 登録結果
 	 */
 	Boolean insert(AttendanceUser attendanceUser);
 }
