@@ -116,12 +116,12 @@ public class AttendanceController {
 			    attendanceForm.setFormattedWeek(formattedDayOfWeek);
 			    
 			    form.add(attendanceForm); // フォームリストに追加する
+			    
 	    }
 	    
 	    formList.setAttendanceFormList(form);
 		model.addAttribute("formList", formList);
 		
-		System.out.println(formList);
 		
 	    
 		return "attendance/regist";
