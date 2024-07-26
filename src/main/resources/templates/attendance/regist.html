@@ -138,7 +138,7 @@
 						<select name="attendanceFormList[${stat.index}].startHour">
 							<th:block th:each="hour : ${hours}">
             <option th:value="${hour}" th:selected="${formList.startHour == hour}">
-                <!-- ゼロ埋めして2桁で表示 -->
+                
                 <span th:text="${hour}"></span>
             </option>
         </th:block>
@@ -146,7 +146,7 @@
 						<select name="attendanceFormList[${stat.index}].startMinute">
 							 <th:block th:each="minute : ${minutes}">
             <option th:value="${minute}" th:selected="${formList.startMinute == minute}">
-                <!-- ゼロ埋めして2桁で表示 -->
+     
                 <span th:text="${minute}"></span>
             </option>
         </th:block>
@@ -154,7 +154,7 @@
 					</td>
 					
 					<script>
-						// 時間と分の選択肢を生成する関数
+						
 						function populateTimeSelects() {
 							const hourSelects = document.querySelectorAll('select[name$=".startHour"]');
 							const minuteSelects = document.querySelectorAll('select[name$=".startMinute"]');
@@ -206,8 +206,23 @@
     });
 					</script>
 					<td class="w120">
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${formList.endTime}" />
-						<span th:text="${@attendanceService.formatTimeToHHMM(formList.endTime)}"></span>
+						<select name="attendanceFormList[${stat.index}].endHour">
+        <th:block th:each="hour : ${hours}">
+            <option th:value="${hour}" th:selected="${formList.endHour == hour}">
+                <span th:text="${hour}"></span>
+            </option>
+        </th:block>
+    </select>
+    時
+
+    <select name="attendanceFormList[${stat.index}].endMinute">
+        <th:block th:each="minute : ${minutes}">
+            <option th:value="${minute}" th:selected="${formList.endMinute == minute}">
+                <span th:text="${minute}"></span>
+            </option>
+        </th:block>
+    </select>
+    分
 					</td>
 					<td class="w150" th:text="${formList.remarks}">
 						<input type="hidden" th:name="|attendanceFormList[${stat.index}].remarks|" th:value="${formList.remarks}" />
