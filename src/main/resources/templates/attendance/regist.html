@@ -34,56 +34,45 @@
 	
 	<script th:src="@{/js/attendance.js}"></script>
 	<div class="container">
-	
 		<div class="component">
 			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
 			<p>ユーザID: <span th:text="${loginUser.userId}"></span></p>
 			<p>ステータス:</p>
 		</div>
-		
-		
+	
+	<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" th:object="${formList}">
 		<div style="display: flex; align-items: center;">
-        
-        <label>表示年月：</label>
-        <select id="year">
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <!-- 必要な年を適宜追加 -->
-        </select>
-        <p for="year">年</p>
- 
-        
-        <select id="month">
-            <option value="1">1月</option>
-            <option value="2">2月</option>
-            <option value="3">3月</option>
-            <option value="4">4月</option>
-            <option value="5">5月</option>
-            <option value="6">6月</option>
-            <option value="7">7月</option>
-            <option value="8">8月</option>
-            <option value="9">9月</option>
-            <option value="10">10月</option>
-            <option value="11">11月</option>
-            <option value="12">12月</option>
-        </select>
-        <p for="month">月</p>
- 
-        <button onclick="displayAttendance()">表示</button>
-    </div>
- 
+			<label>表示年月：</label>
+			<select name="year">
+				<option th:each="year : ${#numbers.sequence(2023, 2025)}" th:value="${year}"
+					th:text="${year}" th:selected="${year == selectedYear}"></option>
+			</select>
+			<p for="year">年</p>
+	
+	
+			<select name="month">
+				<option th:each="month : ${#numbers.sequence(1, 12)}" th:value="${month}"
+					th:text="${month}" th:selected="${month == selectedMonth}"></option>
+			</select>
+			<p for="month">月</p>
+	
+			<button type="submit" name="display">表示</button>
+		</div>
+	</form>
+	
+		
 		
 		<div style="display: flex; justify-content: flex-end;">
-			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+			<form th:action="@{/attendance/regist}" method="post" th:if="${session.loginUser.role == '0002'}">
 				<input type="submit" value="却下" class="btn btn-mgmt" />
 			</form>
-			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+			<form th:action="@{/attendance/regist}" method="post" th:if="${session.loginUser.role == '0002'}">
 				<input type="submit" value="承認" class="btn btn-mgmt" />
 			</form>
-			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+			<form th:action="@{/attendance/regist}" method="post">
 				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
 			</form>
-			<form th:action="@{/attendance/regist}" method="post" class="form-inline">
+			<form th:action="@{/attendance/regist}" method="post" onsubmit="return validateAttendanceInput();">
 				<input type="submit" value="登録" class="btn btn-mgmt" />
 			</form>
 		</div>
@@ -116,20 +105,31 @@
 					<th class="w150">備考</th>
 				</tr>
 			</thead>
-			<tbody  id="attendanceTableBody" style="overflow-y: scroll;"  th:each="attendanceDto : ${attendanceDtoList}" th:object="${attendanceDto}">
-				<tr>
-					<td class="w40">[[${#dates.format(attendanceDto.date, "M/d")}]]</td>
-					<td class="w40">[[${#dates.format(attendanceDto.date, "E")}]]</td>
-					<td class="w100" th:text="${attendanceDto.status}"></td>
-					<td class="w120">
-						<span th:text="${@attendanceService.formatTimeToHHMM(attendanceDto.startTime)}"></span>
-						 <div class="time-selectors" id="startTimeDiv"></div>
+			<tbody id="attendanceTableBody" style="overflow-y: scroll;">
+				<tr th:each="formList, stat : *{attendanceFormList.attendanceFormList}">
+					<td class="w40" th:text="${formList.formattedDate}">
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].formattedDate|"
+							th:value="${formList.formattedDate}" />
+					</td>
+					<td class="w40" th:text="${formList.formattedWeek}">
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].formattedWeek|"
+							th:value="${formList.formattedWeek}" />
+					</td>
+					<td class="w100" th:text="${formList.status}">
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|" th:value="${formList.status}" />
 					</td>
 					<td class="w120">
-						<span th:text="${@attendanceService.formatTimeToHHMM(attendanceDto.endTime)}"></span>
-						<div class="time-selectors" id="endTimeDiv"></div>
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|"
+							th:value="${formList.startTime}" />
+						<span th:text="${@attendanceService.formatTimeToHHMM(formList.startTime)}"></span>
 					</td>
-					<td class="w150" th:text="${attendanceDto.remarks}"></td>
+					<td class="w120">
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${formList.endTime}" />
+						<span th:text="${@attendanceService.formatTimeToHHMM(formList.endTime)}"></span>
+					</td>
+					<td class="w150" th:text="${formList.remarks}">
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].remarks|" th:value="${formList.remarks}" />
+					</td>
 				</tr>
 			</tbody>
 		</table>
