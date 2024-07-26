@@ -118,7 +118,7 @@
 							th:value="${formList.formattedWeek}" />
 					</td>
 					<td class="w100">
-						<select name="attendanceFormList[${stat.index}].status">
+						<select name="attendanceFormList[${stat.index}].status" th:disabled="${formList.status != null}">
                             <option value="0" th:selected="${formList.status == 0}">通常出勤</option>
                             <option value="1" th:selected="${formList.status == 1}">休日</option>
                             <option value="2" th:selected="${formList.status == 2}">祝日</option>
@@ -135,82 +135,30 @@
 						<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|" th:value="${formList.status}" />
 					</td>
 					<td class="w120">
-						<select name="attendanceFormList[${stat.index}].startHour">
-							<th:block th:each="hour : ${hours}">
-            <option th:value="${hour}" th:selected="${formList.startHour == hour}">
-                <!-- ゼロ埋めして2桁で表示 -->
-                <span th:text="${hour}"></span>
-            </option>
-        </th:block>
+						<select name="attendanceFormList[${stat.index}].startHour" th:disabled="${formList.startTime != null}">
+							<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
+								th:selected="${formList.startHour == hour}"></option>
 						</select>
-						<select name="attendanceFormList[${stat.index}].startMinute">
-							 <th:block th:each="minute : ${minutes}">
-            <option th:value="${minute}" th:selected="${formList.startMinute == minute}">
-                <!-- ゼロ埋めして2桁で表示 -->
-                <span th:text="${minute}"></span>
-            </option>
-        </th:block>
+						:
+						<select name="attendanceFormList[${stat.index}].startMinute"  th:disabled="${formList.startTime != null}">
+							<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
+								th:selected="${formList.startMinute == minute}"></option>
 						</select>
 					</td>
-					
-					<script>
-						// 時間と分の選択肢を生成する関数
-						function populateTimeSelects() {
-							const hourSelects = document.querySelectorAll('select[name$=".startHour"]');
-							const minuteSelects = document.querySelectorAll('select[name$=".startMinute"]');
-
-							hourSelects.forEach(select => {
-								for (let hour = 0; hour < 24; hour++) {
-									const option = document.createElement('option');
-									option.value = hour;
-									option.textContent = hour.toString().padStart(2, '0');
-									select.appendChild(option);
-								}
-							});
-
-							minuteSelects.forEach(select => {
-								for (let minute = 0; minute < 60; minute++) {
-									const option = document.createElement('option');
-									option.value = minute;
-									option.textContent = minute.toString().padStart(2, '0');
-									select.appendChild(option);
-								}
-							});
-						}
-
-						// 選択肢を反映する関数
-    function setSelectValues() {
-        const timeData = document.querySelectorAll('td.w120');
-
-        timeData.forEach(td => {
-            const hourSelect = td.querySelector('select.hour-select');
-            const minuteSelect = td.querySelector('select.minute-select');
-
-            // 既存データがあれば、それを選択状態にする
-            const startHour = td.getAttribute('data-start-hour');
-            const startMinute = td.getAttribute('data-start-minute');
-
-            if (startHour !== null) {
-                hourSelect.value = startHour;
-            }
-            if (startMinute !== null) {
-                minuteSelect.value = startMinute;
-            }
-        });
-    }
-
-    // DOMContentLoaded イベントでスクリプトを実行
-    document.addEventListener('DOMContentLoaded', () => {
-        populateTimeSelects();
-        setSelectValues();
-    });
-					</script>
 					<td class="w120">
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${formList.endTime}" />
-						<span th:text="${@attendanceService.formatTimeToHHMM(formList.endTime)}"></span>
+						<select name="attendanceFormList[${stat.index}].endHour" th:disabled="${formList.endTime != null}">
+							<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
+								th:selected="${formList.endHour == hour}"></option>
+						</select>
+						:
+						<select name="attendanceFormList[${stat.index}].endMinute" th:disabled="${formList.endTime != null}">
+							<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
+								th:selected="${formList.endMinute == minute}"></option>
+						</select>
 					</td>
-					<td class="w150" th:text="${formList.remarks}">
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].remarks|" th:value="${formList.remarks}" />
+					<td class="w150">
+						<input type="text" name="attendanceFormList[${stat.index}].remarks" th:value="${formList.remarks}"
+							placeholder="備考を入力してください" th:disabled="${formList.remarks != null}"/>
 					</td>
 				</tr>
 			</tbody>

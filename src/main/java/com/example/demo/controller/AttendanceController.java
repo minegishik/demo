@@ -6,6 +6,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ import com.example.demo.form.AttendanceForm;
 import com.example.demo.form.AttendanceFormList;
 import com.example.demo.service.AttendanceService;
 import com.example.demo.service.LoginService;
+import com.example.demo.util.TimeUtils;
 
 import jakarta.servlet.http.HttpSession;
  
@@ -68,8 +72,19 @@ public class AttendanceController {
 	    
 	    List<AttendanceUser> attendanceList = attendanceService.getAttendanceYearMonth(userId,year,month);
 	    model.addAttribute("attendanceList", attendanceList);
-	   
-	
+	    
+	 // 時間と分のリストを生成
+	    List<String> hours = IntStream.range(0, 24)
+	                                 .mapToObj(i -> String.format("%02d", i))
+	                                 .collect(Collectors.toList());
+	    List<String> minutes = IntStream.range(0, 60)
+	                                   .mapToObj(i -> String.format("%02d", i))
+	                                   .collect(Collectors.toList());
+
+	    model.addAttribute("hours", hours);
+	    model.addAttribute("minutes", minutes);
+	    
+	    
 	    //比較
 	    for (AttendanceUser day : calendar) {
 	    	boolean found = false;
@@ -115,14 +130,24 @@ public class AttendanceController {
 			    String formattedDayOfWeek = localDate.format(dayOfWeekFormatter);
 			    attendanceForm.setFormattedWeek(formattedDayOfWeek);
 			    
+			 // 時間の分割処理
+		        Map<String, String> startTimeParts = TimeUtils.splitTime(day2.getStartTime());
+		        attendanceForm.setStartHour(startTimeParts.get("hour")); // 時
+		        attendanceForm.setStartMinute(startTimeParts.get("minute")); // 分
+		        
+		        Map<String, String> endTimeParts = TimeUtils.splitTime(day2.getEndTime());
+		        attendanceForm.setEndHour(endTimeParts.get("hour")); // 時
+		        attendanceForm.setEndMinute(endTimeParts.get("minute")); // 分
+			    
 			    form.add(attendanceForm); // フォームリストに追加する
+			    
 			    
 	    }
 	    
 	    formList.setAttendanceFormList(form);
 		model.addAttribute("formList", formList);
 		
-		
+		System.out.println(formList);
 	    
 		return "attendance/regist";
 	}
@@ -133,7 +158,7 @@ public class AttendanceController {
 	 * @param model
 	 * @return 勤怠登録画面
 	 */
-	@PostMapping(path="/regist", params="punchIn")
+	@PostMapping(path="/regist", params="regist")
 	public String punchIn() {
 		return "attendance/regist";
 	}
