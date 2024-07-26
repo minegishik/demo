@@ -83,16 +83,14 @@ public class UserService {
 			return "";
 		}
 	}
-	
-	
+
 	public String validateSearch(UserForm userForm, BindingResult result) {
 		if (userForm.getName() == null || userForm.getName().isEmpty()) {
 			result.addError(new FieldError("name", "name", "※ユーザー名: 入力してください。"));
-		}
-
-		// ユーザー名が不正(文字数、全角の制限)だった場合
-		if (userForm.getName() != null && 20 < userForm.getName().length()) {
-			result.addError(new FieldError("name", "name", "※ユーザー名: 全角20文字以内で入力してください。"));
+		} else if (userForm.getName() != null && 20 < userForm.getName().length()) {
+			result.addError(new FieldError("name", "name", "※ユーザー名: 20文字以内で入力してください。"));
+		} else if (userForm.getName() != null && !userForm.getName().matches("^[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+$")) {
+			result.rejectValue("name", "name3", "※ユーザー名: 全角で記入してください。");
 		}
 		return "";
 	}
@@ -103,15 +101,19 @@ public class UserService {
 		//		if (userForm.getName() != null || userForm.getName() != user.getName()) {
 		//			result.rejectValue("search", "error.search", "存在しないユーザーです。");
 		//		}
-		
+
 		// ユーザー名がNullだった場合
 		if (userForm.getName() == null || userForm.getName().isEmpty()) {
-			result.rejectValue("name", "name", "※ユーザー名: 入力してください。");
+			result.rejectValue("name", "name1", "※ユーザー名: 入力してください。");
 		}
 
 		// ユーザー名が不正(文字数、全角の制限)だった場合
 		if (userForm.getName() != null && 20 < userForm.getName().length()) {
-			result.rejectValue("name", "name", "※ユーザー名: 全角20文字以内で入力してください。");
+			result.rejectValue("name", "name2", "※ユーザー名: 20文字以内で入力してください。");
+		}
+
+		if (userForm.getName() != null && !userForm.getName().matches("^[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+$")) {
+			result.rejectValue("name", "name3", "※ユーザー名: 全角で記入してください。");
 		}
 
 		// パスワードがNullだった場合
