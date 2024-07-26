@@ -41,8 +41,16 @@ public interface AttendanceMapper {
 	 * @param year
 	 * @param month
 	 * 
-	 * @return 
+	 * @return 勤怠情報エンティティ
 	 */
 	List<AttendanceUser>findByAttendanceYearMonth(@Param("userId") int userId, @Param("year") int year, @Param("month") int month);
-
+	
+	
+	/**
+	 * 勤怠情報登録
+	 * 
+	 * @param attendanceUser
+	 * @return 更新結果
+	 */
+	Boolean insert(AttendanceUser attendanceUser);
 }
