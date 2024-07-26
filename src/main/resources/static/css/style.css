@@ -44,12 +44,9 @@ table {
   background-color: transparent;
 }
 
-.table {
-	margin: 0 auto;
-	font-size: 12px;
-    width: 70%;
-    margin-bottom: 20px;
-}
+
+
+
 
 th, td {
 	padding: 12px;
