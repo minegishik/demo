@@ -22,18 +22,4 @@ function validateAttendanceInput() {
     return true; // すべての勤怠情報が入力されている場合、送信を許可
 }
 
-//日付のフォーマット変換
-function formatDateString(dateString) {
-    var date = new Date(dateString);
-    return (date.getMonth() + 1) + "/" + date.getDate();
-}
-
-
-//曜日の表示
-function formatDayOfWeek(dateString) {
-    var date = new Date(dateString);
-    var daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
-    return daysOfWeek[date.getDay()];
-}
-
 
