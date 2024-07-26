@@ -43,16 +43,18 @@
 	<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" th:object="${formList}">
 		<div style="display: flex; align-items: center;">
 			<label>表示年月：</label>
+	
 			<select name="year">
-				<option th:each="year : ${#numbers.sequence(2023, 2025)}" th:value="${year}"
-					th:text="${year}" th:selected="${year == selectedYear}"></option>
+				<option value="" th:text="'選択してください'" th:selected="${selectedYear == null}"></option>
+				<option th:each="year : ${#numbers.sequence(2023, 2025)}" th:value="${year}" th:text="${year}"
+					th:selected="${year == selectedYear}"></option>
 			</select>
 			<p for="year">年</p>
 	
-	
 			<select name="month">
-				<option th:each="month : ${#numbers.sequence(1, 12)}" th:value="${month}"
-					th:text="${month}" th:selected="${month == selectedMonth}"></option>
+				<option value="" th:text="'選択してください'" th:selected="${selectedMonth == null}"></option>
+				<option th:each="month : ${#numbers.sequence(1, 12)}" th:value="${month}" th:text="${month}"
+					th:selected="${month == selectedMonth}"></option>
 			</select>
 			<p for="month">月</p>
 	
@@ -73,7 +75,7 @@
 				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
 			</form>
 			<form th:action="@{/attendance/regist}" method="post" onsubmit="return validateAttendanceInput();">
-				<input type="submit" value="登録" class="btn btn-mgmt" />
+				<input type="submit" value="登録" name="regist" class="btn btn-mgmt" />
 			</form>
 		</div>
 		
@@ -115,14 +117,94 @@
 						<input type="hidden" th:name="|attendanceFormList[${stat.index}].formattedWeek|"
 							th:value="${formList.formattedWeek}" />
 					</td>
-					<td class="w100" th:text="${formList.status}">
+					<td class="w100">
+						<select name="attendanceFormList[${stat.index}].status">
+                            <option value="0" th:selected="${formList.status == 0}">通常出勤</option>
+                            <option value="1" th:selected="${formList.status == 1}">休日</option>
+                            <option value="2" th:selected="${formList.status == 2}">祝日</option>
+                            <option value="3" th:selected="${formList.status == 3}">遅刻</option>
+                            <option value="4" th:selected="${formList.status == 4}">有給</option>
+                            <option value="5" th:selected="${formList.status == 5}">欠勤</option>
+                            <option value="6" th:selected="${formList.status == 6}">早退</option>
+                            <option value="7" th:selected="${formList.status == 7}">時間外勤務</option>
+                            <option value="8" th:selected="${formList.status == 8}">振替出勤</option>
+                            <option value="9" th:selected="${formList.status == 9}">振替休日</option>
+                            <option value="10" th:selected="${formList.status == 10}">代替出勤</option>
+                            <option value="11" th:selected="${formList.status == 11}">代替休日</option>
+                        </select>
 						<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|" th:value="${formList.status}" />
 					</td>
 					<td class="w120">
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|"
-							th:value="${formList.startTime}" />
-						<span th:text="${@attendanceService.formatTimeToHHMM(formList.startTime)}"></span>
+						<select name="attendanceFormList[${stat.index}].startHour">
+							<th:block th:each="hour : ${hours}">
+            <option th:value="${hour}" th:selected="${formList.startHour == hour}">
+                <!-- ゼロ埋めして2桁で表示 -->
+                <span th:text="${hour}"></span>
+            </option>
+        </th:block>
+						</select>
+						<select name="attendanceFormList[${stat.index}].startMinute">
+							 <th:block th:each="minute : ${minutes}">
+            <option th:value="${minute}" th:selected="${formList.startMinute == minute}">
+                <!-- ゼロ埋めして2桁で表示 -->
+                <span th:text="${minute}"></span>
+            </option>
+        </th:block>
+						</select>
 					</td>
+					
+					<script>
+						// 時間と分の選択肢を生成する関数
+						function populateTimeSelects() {
+							const hourSelects = document.querySelectorAll('select[name$=".startHour"]');
+							const minuteSelects = document.querySelectorAll('select[name$=".startMinute"]');
+
+							hourSelects.forEach(select => {
+								for (let hour = 0; hour < 24; hour++) {
+									const option = document.createElement('option');
+									option.value = hour;
+									option.textContent = hour.toString().padStart(2, '0');
+									select.appendChild(option);
+								}
+							});
+
+							minuteSelects.forEach(select => {
+								for (let minute = 0; minute < 60; minute++) {
+									const option = document.createElement('option');
+									option.value = minute;
+									option.textContent = minute.toString().padStart(2, '0');
+									select.appendChild(option);
+								}
+							});
+						}
+
+						// 選択肢を反映する関数
+    function setSelectValues() {
+        const timeData = document.querySelectorAll('td.w120');
+
+        timeData.forEach(td => {
+            const hourSelect = td.querySelector('select.hour-select');
+            const minuteSelect = td.querySelector('select.minute-select');
+
+            // 既存データがあれば、それを選択状態にする
+            const startHour = td.getAttribute('data-start-hour');
+            const startMinute = td.getAttribute('data-start-minute');
+
+            if (startHour !== null) {
+                hourSelect.value = startHour;
+            }
+            if (startMinute !== null) {
+                minuteSelect.value = startMinute;
+            }
+        });
+    }
+
+    // DOMContentLoaded イベントでスクリプトを実行
+    document.addEventListener('DOMContentLoaded', () => {
+        populateTimeSelects();
+        setSelectValues();
+    });
+					</script>
 					<td class="w120">
 						<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${formList.endTime}" />
 						<span th:text="${@attendanceService.formatTimeToHHMM(formList.endTime)}"></span>
