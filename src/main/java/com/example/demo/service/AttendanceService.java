@@ -25,7 +25,11 @@ public class AttendanceService {
 	
 	// 時間をHH:mm形式にフォーマットするメソッド
     public String formatTimeToHHMM(LocalTime time) {
-        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+    	if (time != null) {
+            return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+        } else {
+            return ""; // もしくは他の適切な処理を追加する（例：デフォルト値の設定、エラーメッセージの返却など）
+        }
     }
 	
 	
