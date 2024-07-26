@@ -16,5 +16,24 @@
     FROM attendance
     WHERE user_id = #{userId}
 	</select>
+	
+	<insert id="insertAttendance" parameterType="com.example.demo.demo.entity.AttendanceUser" useGeneratedKeys="true" keyProperty="attendanceId">>
+		INSERT INTO attendance
+		(
+			user_id,
+			status,
+			date,
+			start_time,
+			end_time,
+			remarks
+		) VALUES (
+			#{usrId},
+			#{status},
+			#{date},
+			#{startTime},
+			#{endTime},
+			#{remarks}
+		)
+	</insert>
 
 </mapper>
