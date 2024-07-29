@@ -106,7 +106,7 @@ public class UserController {
 
 	/**
 	 * 
-	 * 新規ユーザー登録・削除
+	 * 新規ユーザー登録・更新・削除
 	 * @param users
 	 * @param model
 	 * @return
