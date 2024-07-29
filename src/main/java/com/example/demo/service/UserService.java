@@ -72,23 +72,21 @@ public class UserService {
 					userForm.getRole(), userForm.getStartDate());
 
 			return userForm.getName() + "を登録しました。";
-		} else {
-			if (userForm.getPassword() != existingUser.getPassword() || userForm.getRole() != existingUser.getRole()
-					|| userForm.getStartDate() != existingUser.getStartDate()) {
+		} else if (userForm.getPassword() != existingUser.getPassword() || userForm.getRole() != existingUser.getRole()
+				|| userForm.getStartDate() != existingUser.getStartDate()) {
 
-				// ユーザー情報更新
-				existingUser.setName(userForm.getName());
-				existingUser.setPassword(userForm.getPassword());
-				existingUser.setRole(userForm.getRole());
-				existingUser.setStartDate(userForm.getStartDate());
-				userMapper.updateUserData(userForm.getName(), userForm.getUserId(), userForm.getPassword(),
-						userForm.getRole(), userForm.getStartDate());
+			// ユーザー情報更新
+			existingUser.setName(userForm.getName());
+			existingUser.setPassword(userForm.getPassword());
+			existingUser.setRole(userForm.getRole());
+			existingUser.setStartDate(userForm.getStartDate());
+			userMapper.updateUserData(userForm.getName(), userForm.getUserId(), userForm.getPassword(),
+					userForm.getRole(), userForm.getStartDate());
 
-				return userForm.getName() + "の情報を更新しました。";
+			return userForm.getName() + "の情報を更新しました。";
 
-			}
-			return "";
 		}
+		return "";
 	}
 
 	/**
@@ -103,7 +101,7 @@ public class UserService {
 			result.addError(new FieldError("name", "name", "※ユーザー名: 入力してください。"));
 		} else if (userForm.getName() != null && 20 < userForm.getName().length()) {
 			result.addError(new FieldError("name", "name", "※ユーザー名: 20文字以内で入力してください。"));
-		} else if (userForm.getName() != null && !userForm.getName().matches("^[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+$")) {
+		} else if (userForm.getName() != null && userForm.getName().matches("[\\x20-\\x7E]+")) {
 			result.rejectValue("name", "name3", "※ユーザー名: 全角で記入してください。");
 		}
 		return "";
@@ -127,7 +125,7 @@ public class UserService {
 			result.rejectValue("name", "name2", "※ユーザー名: 20文字以内で入力してください。");
 		}
 
-		if (userForm.getName() != null && !userForm.getName().matches("^[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+$")) {
+		if (userForm.getName() != null && userForm.getName().matches("[\\x20-\\x7E]+")) {
 			result.rejectValue("name", "name3", "※ユーザー名: 全角で記入してください。");
 		}
 
@@ -189,4 +187,3 @@ public class UserService {
 
 	}
 }
-
