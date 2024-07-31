@@ -1,7 +1,5 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +10,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +75,7 @@ public class AttendanceController {
 
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
-
+		//勤怠情報取得
 		List<AttendanceUser> attendanceList = attendanceService.getAttendanceYearMonth(userId, year, month);
 		model.addAttribute("attendanceList", attendanceList);
 
@@ -118,7 +117,6 @@ public class AttendanceController {
 
 		for (AttendanceUser day2 : calendar) {
 			AttendanceForm attendanceForm = new AttendanceForm();
-			attendanceForm.setUserId(day2.getUserId());
 			attendanceForm.setUserId(loginUser.getUserId());
 			attendanceForm.setStatus(day2.getStatus());
 			attendanceForm.setDate(day2.getDate());
@@ -126,13 +124,12 @@ public class AttendanceController {
 			attendanceForm.setEndTime(day2.getEndTime());
 			attendanceForm.setRemarks(day2.getRemarks());
 
-			// Date型からLocalDate型に変換する
-			LocalDate localDate = day2.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			
 			// 日付と曜日のフォーマットをセット
 			// 日付と曜日のフォーマットをセット
-			String formattedDate = localDate.format(dateFormatter);
+			String formattedDate = day2.getDate().format(dateFormatter);
 			attendanceForm.setFormattedDate(formattedDate);
-			String formattedDayOfWeek = localDate.format(dayOfWeekFormatter);
+			String formattedDayOfWeek = day2.getDate().format(dayOfWeekFormatter);
 			attendanceForm.setFormattedWeek(formattedDayOfWeek);
 
 			// 時間の分割処理
@@ -148,10 +145,10 @@ public class AttendanceController {
 
 		}
 
-		formList.setAttendanceFormList(form);
+		formList.setFormList(form);
 		model.addAttribute("formList", formList);
 
-		System.out.println(formList);
+		session.setAttribute("formList", formList);
 
 		return "attendance/regist";
 	}
@@ -162,10 +159,60 @@ public class AttendanceController {
 	 * @param model
 	 * @return 勤怠登録画面
 	 */
-	@PostMapping(path = "/regist", params = "regist")
-	public String punchIn(@ModelAttribute AttendanceForm attendanceForm, Model model) {
+	@PostMapping(path = "/regist", params = "insert")
+	public String punchIn(@RequestParam(required = false) Integer year,
+	        @RequestParam(required = false) Integer month,
+	        @ModelAttribute AttendanceFormList formList,
+	        BindingResult result,
+	        Model model,
+	        HttpSession session) {
 		
-		return "attendance/regist";
+		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+	    model.addAttribute("loginUser", loginUser);
+	    int userId = loginUser.getUserId();
+	    
+	    
+	 // セッションからフォームリストを取得
+	    AttendanceFormList sessionFormList = (AttendanceFormList) session.getAttribute("formList");
+
+	    // エラーハンドリング
+	    if (sessionFormList == null || sessionFormList.getFormList() == null) {
+	        model.addAttribute("errorMessage", "セッションのデータが存在しません。");
+	        return "attendance/regist";
+	    }
+
+	    List<AttendanceForm> formListFromSession = sessionFormList.getFormList();
+
+	    if (formListFromSession.isEmpty()) {
+	        model.addAttribute("errorMessage", "登録する勤怠情報がありません。");
+	        return "attendance/regist";
+	    }
+
+	    // 勤怠情報を削除
+	    for (AttendanceForm attendanceForm : formListFromSession) {
+	        attendanceService.deleteAttendance(userId, attendanceForm.getDate());
+	    }
+
+	    // 新しい勤怠情報の登録処理
+	    for (AttendanceForm attendanceForm : formListFromSession) {
+	        AttendanceUser newAttendance = new AttendanceUser();
+	        newAttendance.setUserId(userId);
+	        newAttendance.setStatus(attendanceForm.getStatus());
+	        newAttendance.setDate(attendanceForm.getDate());
+	        newAttendance.setStartTime(attendanceForm.getStartTime());
+	        newAttendance.setEndTime(attendanceForm.getEndTime());
+	        newAttendance.setRemarks(attendanceForm.getRemarks());
+
+			
+			
+			attendanceService.insertAttendance(newAttendance);
+			
+		}
+		// 成功メッセージの設定
+	    model.addAttribute("successMessage", "勤怠情報が正常に登録されました。");
+
+	 
+        return displayIn(year,month,formList,session,model);
 	}
 
 }
