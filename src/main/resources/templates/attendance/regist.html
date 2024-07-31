@@ -34,7 +34,7 @@
 
 <body>
 
-	<script th:src="@{/js/attendance.js}"></script>
+<!--	<script th:src="@{/js/attendance.js}"></script>-->
 	<div class="container">
 		<div class="component">
 			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
@@ -79,8 +79,18 @@
 			<form th:action="@{/attendance/regist}" method="post">
 				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
 			</form>
-			<form th:action="@{/attendance/regist}" method="post" onsubmit="return validateAttendanceInput();">
-				<input type="submit" value="登録" name="regist" class="btn btn-mgmt" />
+			<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateAttendanceInput();">
+				<th:block>
+				<div th:each="form, formStat : ${attendanceFormList.formList}">
+					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].userId|" th:value="${form.userId}" />
+					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].status|" th:value="${form.status}" />
+					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].date|" th:value="${form.date}" />
+					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].startTime|" th:value="${form.startTime}" />
+					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].endTime|" th:value="${form.endTime}" />
+					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].remarks|" th:value="${form.remarks}" />
+				</div>
+				</th:block>
+				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" />
 			</form>
 		</div>
 
@@ -113,17 +123,16 @@
 				</tr>
 			</thead>
 			<tbody id="attendanceTableBody" style="overflow-y: scroll;">
-				<tr th:each="formList, stat : *{attendanceFormList.attendanceFormList}">
+				<tr th:each="formList, stat : ${attendanceFormList.formList}">
 					<td class="w40" th:text="${formList.formattedDate}">
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].formattedDate|"
-							th:value="${formList.formattedDate}" />
+						<th:block>
+							<input type="hidden" th:field="*{attendanceFormList.formList[${stat.index}].date}" th:value="${formList.date}" />
+						</th:block>
 					</td>
 					<td class="w40" th:text="${formList.formattedWeek}">
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].formattedWeek|"
-							th:value="${formList.formattedWeek}" />
 					</td>
 					<td class="w100">
-						<select name="attendanceFormList[${stat.index}].status"
+						<select th:name="|attendanceFormList[${stat.index}].status|"
 							th:disabled="${formList.status != null}">
 							<option value="0" th:selected="${formList.status == 0}">通常出勤</option>
 							<option value="1" th:selected="${formList.status == 1}">休日</option>
@@ -168,7 +177,7 @@
 						</select>
 					</td>
 					<td class="w150">
-						<input type="text" name="attendanceFormList[${stat.index}].remarks"
+						<input type="text" th:name="|attendanceFormList[${stat.index}].remarks|"
 							th:value="${formList.remarks}" placeholder="備考を入力してください"
 							th:disabled="${formList.remarks != null}" />
 						<div th:if="${errorMessage}" class="error" role="alert">
@@ -179,7 +188,8 @@
 			</tbody>
 		</table>
 	</div>
-
+	
+	
 </body>
 
 </html>
