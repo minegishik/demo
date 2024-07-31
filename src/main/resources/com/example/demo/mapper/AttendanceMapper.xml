@@ -10,14 +10,15 @@
 			AND date = #{date}
 	</select>
 	
-	
 	<select id="findByAttendanceYearMonth" resultType="com.example.demo.entity.AttendanceUser">
     SELECT *
     FROM attendance
     WHERE user_id = #{userId}
+    	AND YEAR(date) = #{year}
+    	AND MONTH(date) = #{month}
 	</select>
 	
-	<insert id="insertAttendance" parameterType="com.example.demo.demo.entity.AttendanceUser" useGeneratedKeys="true" keyProperty="attendanceId">>
+	<insert id="insertAttendance" parameterType="com.example.demo.entity.AttendanceUser" useGeneratedKeys="true" keyProperty="attendanceId">
 		INSERT INTO attendance
 		(
 			user_id,
@@ -27,7 +28,7 @@
 			end_time,
 			remarks
 		) VALUES (
-			#{usrId},
+			#{userId},
 			#{status},
 			#{date},
 			#{startTime},
@@ -35,5 +36,23 @@
 			#{remarks}
 		)
 	</insert>
+	
+	<update id="updateAttendance" parameterType="com.example.demo.entity.AttendanceUser">
+		UPDATE attendance
+		SET 
+			status = #{status},
+			start_time = #{startTime},
+			end_time = #{endTime},
+			remarks = #{remarks}
+		WHERE attendance_id = #{attendanceId}
+	</update>
+	
+	<delete id="deleteAttendance" parameterType="com.example.demo.entity.AttendanceUser">
+		DELETE
+		FROM attendance
+		WHERE
+			user_id = #{userId}
+			AND date = #{date}
+	</delete>
 
 </mapper>
