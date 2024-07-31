@@ -30,11 +30,6 @@ public class AttendanceUser {
 	//フォーマット変更した曜日
 	private String formattedWeek;
 	
-	// コンストラクタ
-    public AttendanceUser() {
-        // デフォルトコンストラクタ
-    }
-  
-
+	
 
 }
