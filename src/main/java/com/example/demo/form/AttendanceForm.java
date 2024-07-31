@@ -1,7 +1,7 @@
 package com.example.demo.form;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import lombok.Data;
 
@@ -10,17 +10,16 @@ public class AttendanceForm {
 	
 	private Integer attendanceId;
 	private Integer userId;
-	private Time startTime;
-	private Time endTime;	
-	private Date date;
+	private LocalTime startTime;
+	private LocalTime endTime;
+	private LocalDate date;
 	private String remarks;
-	private Short status;
-	
+	private Integer status;
+
 	private String formattedDate; // フォーマットされた日付を保持する文字列
 	private String formattedWeek; // フォーマットされた曜日を保持する文字列
 	private String startHour;
-    private String startMinute;
-    private String endHour;
-    private String endMinute;
-
+	private String startMinute;
+	private String endHour;
+	private String endMinute;
 }
