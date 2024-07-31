@@ -3,10 +3,8 @@ package com.example.demo.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,11 +61,37 @@ public class AttendanceService {
 	    for (LocalDate date = firstDayOfMonth; !date.isAfter(lastDayOfMonth); date = date.plusDays(1)) {
 	        // AttendanceUserのインスタンスを生成し、日付を設定する
 	        AttendanceUser attendanceUser = new AttendanceUser();
-	        attendanceUser.setDate(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+	        attendanceUser.setDate(date);
 	        calendar.add(attendanceUser);
 	    }
 
 	    return calendar;
 	}
+	
+	/**
+	 * 勤怠登録処理
+	 * 
+	 * @param attendanceForm
+	 * @param year
+	 * @param month
+	 * @param userId
+	 * @return
+	 */
+    public boolean insertAttendance(AttendanceUser attendanceUser) {
+    	int attendance = attendanceMapper.insertAttendance(attendanceUser);
+        
+    	return attendance > 0;
+    }
+    
+    /**
+     * 勤怠情報削除
+     * 
+     * @param userId
+     * @param date
+     */
+    public void deleteAttendance(Integer userId,LocalDate date) {
+    	attendanceMapper.deleteAttendance(userId, date);
+    }
+	
 	
 }
