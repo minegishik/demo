@@ -18,8 +18,6 @@ public class AttendanceForm {
 
 	private String formattedDate; // フォーマットされた日付を保持する文字列
 	private String formattedWeek; // フォーマットされた曜日を保持する文字列
-	private String startHour;
-	private String startMinute;
-	private String endHour;
-	private String endMinute;
+	
+
 }
