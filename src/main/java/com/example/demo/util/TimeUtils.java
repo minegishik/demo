@@ -1,12 +1,12 @@
 package com.example.demo.util;
 
-import java.sql.Time;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TimeUtils {
 	
-	public static Map<String, String> splitTime(Time time) {
+	public static Map<String, String> splitTime(LocalTime time) {
         Map<String, String> timeParts = new HashMap<>();
         if (time != null) {
             String timeStr = time.toString(); // "hh:mm:ss" 形式
