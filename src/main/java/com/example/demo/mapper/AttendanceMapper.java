@@ -1,5 +1,6 @@
 package com.example.demo.mapper;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -52,5 +53,21 @@ public interface AttendanceMapper {
 	 * @param attendanceUser
 	 * @return 登録結果
 	 */
-	Boolean insert(AttendanceUser attendanceUser);
+	int insertAttendance (AttendanceUser attendanceUser);
+	
+	/**
+	 * 勤怠情報更新
+	 * 
+	 * @param attendanceUser
+	 * @return 反映結果
+	 */
+	Boolean updateAttendance (AttendanceUser attendanceUser);
+	
+	/**
+	 * 勤怠情報削除
+	 * 
+	 * @param attendanceUser
+	 * @return 反映結果
+	 */
+	void deleteAttendance (@Param("userId") Integer userId, @Param("date") LocalDate date);
 }
