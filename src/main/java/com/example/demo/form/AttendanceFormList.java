@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class AttendanceFormList {
 	
-	private List<AttendanceForm> attendanceFormList;
+	private List<AttendanceForm> formList;
 
 }
