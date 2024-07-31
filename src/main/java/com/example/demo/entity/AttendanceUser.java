@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.springframework.stereotype.Component;
 
@@ -16,13 +16,13 @@ public class AttendanceUser {
 	//ユーザーID
 	private Integer userId;
 	//勤務状況
-	private Short status;
+	private Integer status;
 	//日付
-	private Date date;
+	private LocalDate date;
 	//出勤時間
-	private Time startTime;
+	private LocalTime startTime;
 	//退勤時間
-	private Time endTime;
+	private LocalTime endTime;
 	//備考
 	private String remarks;
 	//フォーマット変更した月日
@@ -34,12 +34,7 @@ public class AttendanceUser {
     public AttendanceUser() {
         // デフォルトコンストラクタ
     }
-    
-
-    // 日付をDate型で取得するメソッド
-    public Date getDate() {
-        return date;
-    }
+  
 
 
 }
