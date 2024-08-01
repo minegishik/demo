@@ -39,7 +39,7 @@
 		<div class="component">
 			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
 			<p>ユーザID: <span th:text="${loginUser.userId}"></span></p>
-			<p>ステータス:</p>
+			<p>ステータス:<span th:text="${statusMessage}"></span></p>
 		</div>
 
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" th:object="${formList}">
@@ -92,9 +92,13 @@
 			<div style="display: flex; justify-content: flex-end;">
 				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
 				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
-				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
+				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" name="apprication"/>
+				<input type="hidden" name="status" value="1" />
+				<input type="hidden" name="year" th:value="${param.year}" />
+				<input type="hidden" name="month" th:value="${param.month}" />
 				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" />
 			</div>
+			<div th:if="${message}" class="success" th:utext="${message}"></div>
 
 			<table class="table table-hover">
 				<thead>
