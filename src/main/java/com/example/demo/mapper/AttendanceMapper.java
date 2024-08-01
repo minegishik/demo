@@ -7,7 +7,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.demo.dto.MonthlyAttendanceDto;
 import com.example.demo.entity.AttendanceUser;
+import com.example.demo.entity.MonthlyAttendance;
+import com.example.demo.form.AttendanceForm;
 
 @Mapper
 public interface AttendanceMapper {
@@ -70,4 +73,29 @@ public interface AttendanceMapper {
 	 * @return 反映結果
 	 */
 	void deleteAttendance (@Param("userId") Integer userId, @Param("date") LocalDate date);
+	
+	
+	/**
+	 * 月次勤怠の承認申請
+	 * 
+	 * @param userId
+	 * @param targetYearMonth
+	 * @param status
+	 * @return
+	 */
+	// 申請ID、申請者ID、申請対象年月、申請日、ステータス(承認待ち・承認済み・却下)
+	
+	Boolean appricationMonthlyAttendance(AttendanceForm attendanceForm);
+	
+	void appricationMonthlyAttendance(MonthlyAttendance monthlyAttendance);
+	
+	MonthlyAttendance findMonthlyAttendanceByUserAndMonth(@Param("userId")Integer uerId, @Param("targetYearMonth") Date targetYearMonth);
+		
+//	MonthlyAttendance findMonthlyAttendanceByUserAndMonth(@Param("userId")Integer uerId, @Param("targetYearMonth") Date targetYearMonth);
+	
+	List<MonthlyAttendanceDto> findMonthlyAttendanceByUserAndMonth2(@Param("userId")Integer uerId, @Param("targetYearMonth") Date targetYearMonth);
+	
+	void update(MonthlyAttendance monthlyAttendance);
+
+	void update(MonthlyAttendanceDto searchResult);
 }
