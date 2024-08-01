@@ -54,5 +54,48 @@
 			user_id = #{userId}
 			AND date = #{date}
 	</delete>
+	
+	<select id="findMonthlyAttendanceByUserAndMonth" parameterType="com.example.demo.entity.MonthlyAttendance">
+		SELECT * 
+		FROM monthly_attendance_req 
+		WHERE user_id = #{userId} 
+			AND target_year_month = #{targetYearMonth}
+	</select>
+	
+	<select id="findMonthlyAttendanceByUserAndMonth2" parameterType="com.example.demo.dto.MonthlyAttendanceDto">
+		SELECT *
+		FROM monthly_attendance_req 
+		WHERE user_id = #{userId} 
+			AND target_year_month = #{targetYearMonth}
+	</select>
+	
+	<insert id="appricationMonthlyAttendance" parameterType="com.example.demo.entity.MonthlyAttendance"  useGeneratedKeys="true" keyProperty="userId">
+		INSERT INTO monthly_attendance_req 
+		(
+			 user_id, 
+			 target_year_month, 
+			 date, 
+			 status 
+		) VALUES ( 
+			 #{userId}, 
+			 #{targetYearMonth}, 
+			 #{date}, 
+			 #{status} 
+		) 
+	</insert> 
+	
+	<update id="update" parameterType="com.example.demo.entity.MonthlyAttendance">
+	
+	 	UPDATE monthly_attendance_req 
+	 	SET 
+	 		id = #{id},
+	 		user_id = #{userId}, 
+	 		target_year_month = #{targetYearMonth}, 
+	 		date = #{date}, 
+	 		status = #{status} 
+	</update>
+	
+	
+	
 
 </mapper>
