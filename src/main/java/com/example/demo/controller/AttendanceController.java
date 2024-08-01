@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.AttendanceUser;
 import com.example.demo.entity.LoginUser;
@@ -71,6 +72,10 @@ public class AttendanceController {
 			model.addAttribute("errorMessage", "※年月を指定してください");
 			return "attendance/regist"; // 同じ画面に戻る
 		}
+		
+		// ステータス（承認状況）を表示
+		String statusMessage = attendanceService.checkStatus(userId, year, month);
+		model.addAttribute("statusMessage", statusMessage);
 
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
@@ -219,6 +224,35 @@ public class AttendanceController {
 	 
         return displayIn(selectedYear, selectedMonth, formList, session, model);
 	}
+	
+	/**
+	 * 勤怠登録画面 『承認申請』ボタン押下
+	 * 
+	 * @param userId
+	 * @param targetYearMonth
+	 * @param status
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(path = "/regist", params = "apprication")
+	public String approve(@RequestParam(required = false) Integer year,@RequestParam(required = false) Integer month, HttpSession session, Model model,
+			RedirectAttributes redirectAttribute) {
+
+		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+		Integer userId = loginUser.getUserId();
+		// ステータス（承認状況）の表示
+		String statusMessage = attendanceService.checkStatus(userId, year, month);
+		model.addAttribute("statusMessage", statusMessage);
+
+		String message = attendanceService.getMonthlyAttendance(userId, year, month);
+		redirectAttribute.addFlashAttribute("message", message);
+
+		model.addAttribute(message);
+
+		return "redirect:/attendance/regist";
+	}
+	
 
 }
 
