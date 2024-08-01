@@ -64,6 +64,8 @@ public class AttendanceController {
 		int userId = loginUser.getUserId();
 		model.addAttribute("selectedYear", year);
 		model.addAttribute("selectedMonth", month);
+		session.setAttribute("selectedYear", year);
+        session.setAttribute("selectedMonth", month);
 
 		if (year == null || month == null) {
 			model.addAttribute("errorMessage", "※年月を指定してください");
@@ -126,7 +128,7 @@ public class AttendanceController {
 
 		formList.setAttendanceFormList(form);
 		model.addAttribute("formList", formList);
-
+		
 		
 
 		return "attendance/regist";
@@ -146,13 +148,20 @@ public class AttendanceController {
 	        Model model,
 	        HttpSession session) {
 		
+		// セッションから選択された年月を取得
+	    Integer selectedYear = (Integer) session.getAttribute("selectedYear");
+	    Integer selectedMonth = (Integer) session.getAttribute("selectedMonth");
+	    
+	 // セッションから取得した年月をモデルに追加
+	    model.addAttribute("selectedYear", selectedYear);
+	    model.addAttribute("selectedMonth", selectedMonth);
+        
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 	    model.addAttribute("loginUser", loginUser);
 	    int userId = loginUser.getUserId();
 	    
 //	  //勤怠情報を削除
 	    for(AttendanceForm attendanceForm : formList.getAttendanceFormList()) {
-	    	System.out.println(attendanceForm);
 	    	attendanceService.deleteAttendance(userId, attendanceForm.getDate());
 	    }
 	    
@@ -170,7 +179,10 @@ public class AttendanceController {
 			if (attendanceForm.getStatus() == null) {
 			    attendanceForm.setStatus(99); // デフォルトのステータス
 			}
-			
+			if (attendanceForm.getDate() != null) {
+	            String formattedDate = attendanceForm.getDate().format(dateFormatter);
+	            System.out.println("Formatted Date: " + formattedDate);
+	        }
 			
 			LocalDate date = attendanceForm.getDate();
 			
@@ -205,7 +217,7 @@ public class AttendanceController {
 	    model.addAttribute("successMessage", "勤怠情報が正常に登録されました。");
 
 	 
-        return displayIn(year,month,formList,session,model);
+        return displayIn(selectedYear, selectedMonth, formList, session, model);
 	}
 
 }
