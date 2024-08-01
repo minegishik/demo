@@ -34,7 +34,7 @@
 
 <body>
 
-<!--	<script th:src="@{/js/attendance.js}"></script>-->
+	<!--	<script th:src="@{/js/attendance.js}"></script>-->
 	<div class="container">
 		<div class="component">
 			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
@@ -69,30 +69,6 @@
 
 
 
-		<div style="display: flex; justify-content: flex-end;">
-			<form th:action="@{/attendance/regist}" method="post" th:if="${session.loginUser.role == '0002'}">
-				<input type="submit" value="却下" class="btn btn-mgmt" />
-			</form>
-			<form th:action="@{/attendance/regist}" method="post" th:if="${session.loginUser.role == '0002'}">
-				<input type="submit" value="承認" class="btn btn-mgmt" />
-			</form>
-			<form th:action="@{/attendance/regist}" method="post">
-				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
-			</form>
-			<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateAttendanceInput();">
-				<th:block>
-				<div th:each="form, formStat : ${attendanceFormList.attendanceFormList}">
-					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].userId|" th:value="${form.userId}" />
-					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].status|" th:value="${form.status}" />
-					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].date|" th:value="${form.date}" />
-					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].startTime|" th:value="${form.startTime}" />
-					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].endTime|" th:value="${form.endTime}" />
-					<input type="hidden" th:name="|attendanceFormList[${formStat.index}].remarks|" th:value="${form.remarks}" />
-				</div>
-				</th:block>
-				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" />
-			</form>
-		</div>
 
 		<table class="table data-table" th:if="${session.loginUser.role == '0003'}">
 			<thead>
@@ -110,82 +86,81 @@
 				</tr>
 			</tbody>
 		</table>
+		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post"
+			onsubmit="return validateAttendanceInput();">
 
-		<table class="table table-hover">
-			<thead>
-				<tr>
-					<th class="w40">日付</th>
-					<th class="w40">曜日</th>
-					<th class="w100">勤務状況</th>
-					<th class="w120">出勤時間</th>
-					<th class="w120">退勤時間</th>
-					<th class="w150">備考</th>
-				</tr>
-			</thead>
-			<tbody id="attendanceTableBody" style="overflow-y: scroll;">
-				<tr th:each="formList, stat : ${attendanceFormList.attendanceFormList}">
-					<td class="w40" th:text="${formList.formattedDate}">
-						<th:block>
-							<input type="hidden" th:field="*{attendanceFormList.attendanceFormList[${stat.index}].date}" th:value="${formList.date}" />
-						</th:block>
-					</td>
-					<td class="w40" th:text="${formList.formattedWeek}">
-					</td>
-					<td class="w100">
-						<select name="attendanceFormList[${stat.index}].status">
-							<option value="99" th:text="'選択してください'" th:selected="${formList.status == null}"></option>
-							<option value="0" th:selected="${formList.status == 0}">通常出勤</option>
-							<option value="1" th:selected="${formList.status == 1}">休日</option>
-							<option value="2" th:selected="${formList.status == 2}">祝日</option>
-							<option value="3" th:selected="${formList.status == 3}">遅刻</option>
-							<option value="4" th:selected="${formList.status == 4}">有給</option>
-							<option value="5" th:selected="${formList.status == 5}">欠勤</option>
-							<option value="6" th:selected="${formList.status == 6}">早退</option>
-							<option value="7" th:selected="${formList.status == 7}">時間外勤務</option>
-							<option value="8" th:selected="${formList.status == 8}">振替出勤</option>
-							<option value="9" th:selected="${formList.status == 9}">振替休日</option>
-							<option value="10" th:selected="${formList.status == 10}">代替出勤</option>
-							<option value="11" th:selected="${formList.status == 11}">代替休日</option>
-						</select>
-						<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|"
-							th:value="${formList.status}" />
-					</td>
-					<td class="w120">
-<!--						<select name="attendanceFormList[${stat.index}].startHour">-->
-<!--							<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"-->
-<!--								th:selected="${formList.startHour == hour}"></option>-->
-<!--						</select>-->
-<!--						:-->
-<!--						<select name="attendanceFormList[${stat.index}].startMinute">-->
-<!--							<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"-->
-<!--								th:selected="${formList.startMinute == minute}"></option>-->
-<!--						</select>-->
-						<input type="text" th:name="|attendanceFormList[${stat.index}].startTime|"
-							th:value="${formList.startTime}" placeholder="出勤時間を入力してください。" />
-					</td>
-					<td class="w120">
-<!--						<select name="attendanceFormList[${stat.index}].endTime">-->
-<!--							<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"-->
-<!--								th:selected="${formList.endHour == hour}"></option>-->
-<!--						</select>-->
-<!--						:-->
-<!--						<select name="attendanceFormList[${stat.index}].endMinute">-->
-<!--							<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"-->
-<!--								th:selected="${formList.endMinute == minute}"></option>-->
-<!--						</select>-->
-						<input type="text" th:name="|attendanceFormList[${stat.index}].endTime|"
-							th:value="${formList.endTime}" placeholder="退勤時間を入力してください" />
-					</td>
-					<td class="w150">
-						<input type="text" th:name="|attendanceFormList[${stat.index}].remarks|"
-							th:value="${formList.remarks}" placeholder="備考を入力してください" />
-					</td>
-				</tr>
-			</tbody>
-		</table>
+			<div style="display: flex; justify-content: flex-end;">
+				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
+				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
+				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
+				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" />
+			</div>
+
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="w40">日付</th>
+						<th class="w40">曜日</th>
+						<th class="w100">勤務状況</th>
+						<th class="w120">出勤時間</th>
+						<th class="w120">退勤時間</th>
+						<th class="w150">備考</th>
+					</tr>
+				</thead>
+				<tbody style="overflow-y: scroll;">
+					<tr th:each="form, stat : ${attendanceFormList.attendanceFormList}">
+						<td class="w40">
+							<th:block>
+								<input type="hidden" th:name="|attendanceFormList[${stat.index}].date|"
+									th:value="${form.date}" />
+							</th:block>
+							<span th:text="${form.formattedDate}"></span>
+						</td>
+						<td class="w40" th:text="${form.formattedWeek}">
+						</td>
+						<td class="w100">
+							<select th:name="|attendanceFormList[${stat.index}].status|">
+								<option value="99" th:text="'選択してください'"></option>
+								<option value="0" th:selected="${form.status == 0}">通常出勤</option>
+								<option value="1" th:selected="${form.status == 1}">休日</option>
+								<option value="2" th:selected="${form.status == 2}">祝日</option>
+								<option value="3" th:selected="${form.status == 3}">遅刻</option>
+								<option value="4" th:selected="${form.status == 4}">有給</option>
+								<option value="5" th:selected="${form.status == 5}">欠勤</option>
+								<option value="6" th:selected="${form.status == 6}">早退</option>
+								<option value="7" th:selected="${form.status == 7}">時間外勤務</option>
+								<option value="8" th:selected="${form.status == 8}">振替出勤</option>
+								<option value="9" th:selected="${form.status == 9}">振替休日</option>
+								<option value="10" th:selected="${form.status == 10}">代替出勤</option>
+								<option value="11" th:selected="${form.status == 11}">代替休日</option>
+							</select>
+							<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|"
+								th:value="${form.status}" />
+						</td>
+						<td class="w120">
+							<input type="text" th:name="|attendanceFormList[${stat.index}].startTime|"
+								th:value="${form.startTime}" placeholder="出勤時間を入力してください。" />
+						</td>
+						<td class="w120">
+
+							<input type="text" th:name="|attendanceFormList[${stat.index}].endTime|"
+								th:value="${form.endTime}" placeholder="退勤時間を入力してください" />
+						</td>
+						<td class="w150">
+							<input type="text" th:name="|attendanceFormList[${stat.index}].remarks|"
+								th:value="${form.remarks}" placeholder="備考を入力してください" />
+						</td>
+						<input type="hidden" th:name="|attendanceFormList[${stat.index}].userId|"
+							th:value="${form.userId}" />
+					</tr>
+				</tbody>
+			</table>
+
+
+		</form>
 	</div>
-	
-	
+
+
 </body>
 
 </html>
