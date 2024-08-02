@@ -44,9 +44,18 @@ table {
   background-color: transparent;
 }
 
+.table-container {
+    display: flex;
+    justify-content: center; /* 横方向に中央配置 */
+    align-items: center;     /* 縦方向に中央配置 */
+    overflow: hidden; /* コンテナ内でのスクロールを防ぐ */
+}
 
-
-
+.table-hover {
+    display: block; /* テーブル全体をブロック表示 */
+    max-width: 100%; /* テーブルの最大幅を親要素に合わせる */
+    overflow-x: auto; /* 横方向のスクロールを可能にする */
+}
 
 th, td {
 	padding: 12px;
@@ -55,6 +64,8 @@ th, td {
 
  .table th,
 .table td {
+	padding: 12px;
+    text-align: center;
    vertical-align: middle;
     border-top: 1px solid #ddd;
 }
