@@ -20,7 +20,7 @@
 		</div>
 
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" th:object="${formList}">
-			<div style="display: flex; align-items: center;">
+			<div style="display: flex; align-items: center;"  th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}">
 				<label>表示年月：</label>
 
 				<select name="year">
@@ -63,15 +63,22 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		
 
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateForm();">
 
 			<div style="display: flex; justify-content: flex-end;">
 				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
 				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
-				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" />
-				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" />
+				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" th:if="${session.loginUser.role == '0004'}" />
+				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" />
 			</div>
+			
+			<div th:if="${successMessage}" class="regist-message" role="alert">
+            <p th:text="${successMessage}"></p>
+        </div>
+			
 			<div class="table-container">
 				<table class="table table-hover">
 					<thead>
