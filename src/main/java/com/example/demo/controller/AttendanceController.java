@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -82,8 +85,18 @@ public class AttendanceController {
 
 		List<AttendanceUser> attendanceList = attendanceService.getAttendanceYearMonth(userId, year, month);
 		model.addAttribute("attendanceList", attendanceList);
+		
+		// 時間と分のリストを生成
+	    List<String> hours = IntStream.range(0, 24)
+	            .mapToObj(i -> String.format("%02d", i))
+	            .collect(Collectors.toList());
+	    List<String> minutes = IntStream.range(0, 60)
+	            .mapToObj(i -> String.format("%02d", i))
+	            .collect(Collectors.toList());
 
-
+	    model.addAttribute("hours", hours);
+	    model.addAttribute("minutes", minutes);
+	    
 		//比較
 		for (AttendanceUser day : calendar) {
 			boolean found = false;
@@ -125,6 +138,17 @@ public class AttendanceController {
 			attendanceForm.setFormattedDate(formattedDate);
 			String formattedDayOfWeek = day2.getDate().format(dayOfWeekFormatter);
 			attendanceForm.setFormattedWeek(formattedDayOfWeek);
+			
+			
+			// 時間の分割処理
+	        if (day2.getStartTime() != null) {
+	            attendanceForm.setStartHour(String.format("%02d", day2.getStartTime().getHour())); // 時
+	            attendanceForm.setStartMinute(String.format("%02d", day2.getStartTime().getMinute())); // 分
+	        }
+	        if (day2.getEndTime() != null) {
+	            attendanceForm.setEndHour(String.format("%02d", day2.getEndTime().getHour())); // 時
+	            attendanceForm.setEndMinute(String.format("%02d", day2.getEndTime().getMinute())); // 分
+	        }
 
 
 			form.add(attendanceForm); // フォームリストに追加する
@@ -134,7 +158,9 @@ public class AttendanceController {
 		formList.setAttendanceFormList(form);
 		model.addAttribute("formList", formList);
 		
-		
+		// 時間の選択肢の準備
+	    model.addAttribute("hours", hours);
+	    model.addAttribute("minutes", minutes);
 
 		return "attendance/regist";
 	}
@@ -184,14 +210,36 @@ public class AttendanceController {
 			if (attendanceForm.getStatus() == null) {
 			    attendanceForm.setStatus(99); // デフォルトのステータス
 			}
-			if (attendanceForm.getDate() != null) {
-	            String formattedDate = attendanceForm.getDate().format(dateFormatter);
-	            System.out.println("Formatted Date: " + formattedDate);
+			if (attendanceForm.getStartHour() == null) {
+	            attendanceForm.setStartHour("0"); // デフォルトの開始時間（時）
 	        }
-			
+	        if (attendanceForm.getStartMinute() == null) {
+	            attendanceForm.setStartMinute("0"); // デフォルトの開始時間（分）
+	        }
+	        if (attendanceForm.getEndHour() == null) {
+	            attendanceForm.setEndHour("0"); // デフォルトの終了時間（時）
+	        }
+	        if (attendanceForm.getEndMinute() == null) {
+	            attendanceForm.setEndMinute("0"); // デフォルトの終了時間（分）
+	        }
 			LocalDate date = attendanceForm.getDate();
 			
-			if(attendanceForm.getStatus() != null) {
+			if(attendanceForm.getStatus() != null && attendanceForm.getDate() != null) {
+				
+				// 時間を LocalTime に変換
+	            LocalTime startTime = LocalTime.of(
+	                Integer.parseInt(attendanceForm.getStartHour()), 
+	                Integer.parseInt(attendanceForm.getStartMinute())
+	            );
+	            LocalTime endTime = LocalTime.of(
+	                Integer.parseInt(attendanceForm.getEndHour()), 
+	                Integer.parseInt(attendanceForm.getEndMinute())
+	            );
+
+	            // 出勤時間と退勤時間をセット
+	            attendanceForm.setStartTime(startTime);
+	            attendanceForm.setEndTime(endTime);
+				
 				// 日付と曜日のフォーマットをセット
                 String formattedDate = date.format(dateFormatter);
                 attendanceForm.setFormattedDate(formattedDate);
@@ -213,9 +261,11 @@ public class AttendanceController {
 			
 			
 			attendanceService.insertAttendance(newAttendance);
-			
+			System.out.println(attendanceForm);
 			}
 		}
+		
+		
 		
 
 		// 成功メッセージの設定
@@ -224,6 +274,7 @@ public class AttendanceController {
 	 
         return displayIn(selectedYear, selectedMonth, formList, session, model);
 	}
+
 	
 	/**
 	 * 勤怠登録画面 『承認申請』ボタン押下
@@ -255,11 +306,3 @@ public class AttendanceController {
 	
 
 }
-
-  // 備考欄の入力チェック
-//if (attendanceForm.getRemarks() != null && attendanceForm.getRemarks().matches("^[\\uFF21-\\uFF3A\\uFF41-\\uFF5A]+$")) {
-//	model.addAttribute("errorMessage", "※全角で記入してください。");
-//	
-//} else if (attendanceForm.getRemarks() != null && 20 < attendanceForm.getRemarks().length()) {
-//	model.addAttribute("errorMessage", "※20字以内で入力してください。");
-//}
