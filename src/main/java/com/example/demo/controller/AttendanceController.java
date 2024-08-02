@@ -261,7 +261,6 @@ public class AttendanceController {
 			
 			
 			attendanceService.insertAttendance(newAttendance);
-			System.out.println(attendanceForm);
 			}
 		}
 		
