@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,16 +49,28 @@ public class LoginController {
 	public String login(@ModelAttribute LoginForm loginForm, Model model, HttpSession session) {
 		
 		LoginUser loginUser = loginService.getLoginUser(loginForm.getUserId());
+		
+		// ユーザーIDが存在し、パスワードが一致するか確認
+	    if (loginUser != null && loginUser.getPassword().equals(loginForm.getPassword())) {
+	        // 利用開始日チェック
+	        LocalDate today = LocalDate.now(); // 現在の日付を取得
 
-		if (loginUser != null && loginUser.getPassword().equals(loginForm.getPassword())) {
+	        // Date 型から LocalDate 型に変換
+	        LocalDate startDate = loginUser.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        if (startDate != null && startDate.isAfter(today)) {
+	            model.addAttribute("loginError", "※利用開始日までログインできません。");
+	            return "/login/index";
+	        }
+
 	        // ログイン成功時の処理
-	        session.setAttribute("loginUser", loginUser);// ログインユーザー情報をセッションに保存
+	        session.setAttribute("loginUser", loginUser); // ログインユーザー情報をセッションに保存
 
 	        // ログイン後の初期画面にリダイレクト
 	        return loginUserUtil.sendDisp();
 	    } else {
-	    	model.addAttribute("error", "ユーザーID、パスワードが不正、もしくはユーザーが無効です。");
-		return "/login/index";
+	        model.addAttribute("loginError", "※ユーザーIDまたはパスワードが正しくありません");
+	        return "/login/index";
 	    }
 	}
 
