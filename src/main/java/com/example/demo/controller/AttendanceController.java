@@ -188,6 +188,7 @@ public class AttendanceController {
 	    model.addAttribute("selectedMonth", selectedMonth);
         
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+		
 	    model.addAttribute("loginUser", loginUser);
 	    int userId = loginUser.getUserId();
 	    
@@ -268,7 +269,7 @@ public class AttendanceController {
 		
 
 		// 成功メッセージの設定
-	    model.addAttribute("successMessage", "勤怠情報が正常に登録されました。");
+	    model.addAttribute("successMessage", "勤怠登録が完了しました。");
 
 	 
         return displayIn(selectedYear, selectedMonth, formList, session, model);
@@ -301,6 +302,25 @@ public class AttendanceController {
 		model.addAttribute(message);
 
 		return "redirect:/attendance/regist";
+	}
+	
+	/**
+	 * 勤怠登録画面　『却下』ボタン押下
+	 * 
+	 * @return
+	 */
+	public String reject() {
+		return "attendance/regist";
+	}
+	
+	
+	/**
+	 * 勤怠登録画面 『承認』ボタン押下
+	 * 
+	 * @return
+	 */
+	public String permit() {
+		return "attendance/regist";
 	}
 	
 
