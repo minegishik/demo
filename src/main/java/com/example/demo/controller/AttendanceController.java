@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,16 +47,19 @@ public class AttendanceController {
 	 * @return　勤怠登録画面
 	 */
 	@RequestMapping("/regist")
-	public String regist(HttpSession session, Model model,Integer userId) {
+	public String regist(HttpSession session, Model model) {
 		
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
-		if(loginUserUtil.isManager()) {
-		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq(userId);
+		
+		
+//		if(loginUserUtil.isManager()) {
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
-		System.out.println(monthlyAttendanceDtoList);
-		}
+//		}
+		
+		
 		AttendanceFormList attendanceFormList = new AttendanceFormList();
 		model.addAttribute("attendanceFormList", attendanceFormList);
 
@@ -319,6 +323,52 @@ public class AttendanceController {
 		model.addAttribute(message);
 
 		return "redirect:/attendance/regist";
+	}
+	
+	
+	/**
+	 * 勤怠登録画面 ユーザー名リンクボタン押下
+	 * 
+	 * @param userId
+	 * @param year
+	 * @param month
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@GetMapping("/monthlyAttendanceReq")
+	public String monthlyAttendanceReq(@RequestParam("userId") int userId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            Model model,
+            HttpSession session) {
+		
+		 // セッションからログインユーザーの情報を取得
+	    LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+	    
+	    // 月別の勤怠データを取得
+	    List<AttendanceUser> attendanceForms = attendanceService.getAttendanceYearMonth(userId, year, month);
+	    
+	    // 時間リスト
+	    List<String> hours = IntStream.range(0, 24)
+	            .mapToObj(i -> String.format("%02d", i))
+	            .collect(Collectors.toList());
+	    List<String> minutes = IntStream.range(0, 60)
+	            .mapToObj(i -> String.format("%02d", i))
+	            .collect(Collectors.toList());
+	    
+	    model.addAttribute("attendanceFormList", attendanceForms);
+	    model.addAttribute("hours", hours);
+	    model.addAttribute("minutes", minutes);
+	    
+	    // マネージャーの場合
+	    if ("0002".equals(loginUser.getRole())) {
+	        List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+	        model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
+	        return "attendance/managerView"; // マネージャー用のビュー
+	    }
+        
+		return "attendance/regist";
 	}
 	
 	/**
