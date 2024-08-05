@@ -124,13 +124,16 @@
 									th:value="${form.status}" />
 							</td>
 							<td class="w120">
+								
 								<select th:name="|attendanceFormList[${stat.index}].startHour|">
+									<option value="" th:text="'選択してください'" th:selected="${form.startHour == "0"}"></option>
 									<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
 										th:selected="${form.startHour == hour}">
 									</option>
 								</select>
 								:
 								<select th:name="|attendanceFormList[${stat.index}].startMinute|">
+									<option value="" th:text="'選択してください'" th:selected="${form.startMinute == null}"></option>
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
 										th:selected="${form.startMinute == minute}"></option>
 								</select>
@@ -139,12 +142,14 @@
 							</td>
 							<td class="w120">
 								<select th:name="|attendanceFormList[${stat.index}].endHour|">
+									<option value="" th:text="'選択してください'" th:selected="${form.endHour == null}"></option>
 									<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
 										th:selected="${form.endHour == hour}">
 									</option>
 								</select>
 								:
 								<select th:name="|attendanceFormList[${stat.index}].endMinute|">
+									<option value="" th:text="'選択してください'" th:selected="${form.endMinute == null}"></option>
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
 										th:selected="${form.endMinute == minute}"></option>
 								</select>
