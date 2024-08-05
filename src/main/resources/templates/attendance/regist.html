@@ -58,7 +58,9 @@
 			<tbody>
 				<tr th:each="monthlyAttendanceDto : ${monthlyAttendanceDtoList}">
 					<td class="w150">
-						
+						<a th:href="@{/attendance/monthlyAttendanceReq(userId=${monthlyAttendanceDto.userId}, year=${monthlyAttendanceDto.year}, month=${monthlyAttendanceDto.month})}">
+						[[${monthlyAttendanceDto.name}]]
+						</a>
 					</td>
 					<td class="w120">
 						[[${#dates.format(monthlyAttendanceDto.targetYearMonth, "yyyy年M月d日")}]]
@@ -77,7 +79,8 @@
 			<div style="display: flex; justify-content: flex-end;">
 				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
 				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
-				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" th:if="${session.loginUser.role == '0004'}" name="apprication" th:attr="disabled = ${buttonEnabled == false}" />
+				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" th:if="${session.loginUser.role == '0004'}" name="apprication" 
+				th:disabled="${isDisabled1 == true or isDisabled2 == true}"/>
 				<input type="hidden" name="year" th:value="${param.year}" />
 				<input type="hidden" name="month" th:value="${param.month}" />
 				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" />
@@ -104,8 +107,7 @@
 					<tbody>
 						<tr th:each="form, stat : ${attendanceFormList.attendanceFormList}">
 							<td class="w40">
-								<input type="hidden" th:name="|attendanceFormList[${stat.index}].date|"
-									th:value="${form.date}" />
+								<input type="hidden" th:name="|attendanceFormList[${stat.index}].date|" th:value="${form.date}" />
 								<span th:text="${form.formattedDate}"></span>
 							</td>
 							<td class="w40" th:text="${form.formattedWeek}">
@@ -126,66 +128,63 @@
 									<option value="10" th:selected="${form.status == 10}">代替出勤</option>
 									<option value="11" th:selected="${form.status == 11}">代替休日</option>
 								</select>
-								<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|"
-									th:value="${form.status}" />
+								<input type="hidden" th:name="|attendanceFormList[${stat.index}].status|" th:value="${form.status}" />
 							</td>
 							<td class="w120">
-							
+						
 								<select th:name="|attendanceFormList[${stat.index}].startHour|">
-									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+						
 									<option value="" th:text="--"
 										th:selected="${form.startHour == null || form.startHour.isEmpty() || form.startHour == '0'}"></option>
-									<!-- 時間の選択肢 -->
+						
 									<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
 										th:selected="${form.startHour != null && !form.startHour.isEmpty() && form.startHour != '0' && form.startHour == hour}">
 									</option>
 								</select>
 								:
-								<!-- 開始分のプルダウンリスト -->
+						
 								<select th:name="|attendanceFormList[${stat.index}].startMinute|">
-									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+						
 									<option value="" th:text="--"
-										th:selected="${form.startMinute == null || form.startMinute.isEmpty() || form.startMinute == '0'}"></option>
-									<!-- 分の選択肢 -->
+										th:selected="${form.startMinute == null || form.startMinute.isEmpty() || form.startMinute == '0'}">
+									</option>
+						
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
 										th:selected="${form.startMinute != null && !form.startMinute.isEmpty() && form.startMinute != '0' && form.startMinute == minute}">
 									</option>
 								</select>
-								<!-- 隠しフィールド -->
+						
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|" th:value="${form.startTime}" />
 							</td>
 							<td class="w120">
 								<select th:name="|attendanceFormList[${stat.index}].endHour|">
-									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+						
 									<option value="" th:text="--"
 										th:selected="${form.endHour == null || form.endHour.isEmpty() || form.endHour == '0'}"></option>
-									<!-- 時間の選択肢 -->
+						
 									<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
 										th:selected="${form.endHour != null && !form.endHour.isEmpty() && form.endHour != '0' && form.endHour == hour}">
 									</option>
 								</select>
 								:
-								<!-- 終了分のプルダウンリスト -->
+						
 								<select th:name="|attendanceFormList[${stat.index}].endMinute|">
-									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+						
 									<option value="" th:text="--"
 										th:selected="${form.endMinute == null || form.endMinute.isEmpty() || form.endMinute == '0'}"></option>
-									<!-- 分の選択肢 -->
+						
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
 										th:selected="${form.endMinute != null && !form.endMinute.isEmpty() && form.endMinute != '0' && form.endMinute == minute}">
 									</option>
 								</select>
-								<!-- 隠しフィールド -->
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${form.endTime}" />
 							</td>
 							<td class="w150">
-								<input type="text" id="remarks" th:name="|attendanceFormList[${stat.index}].remarks|"
-									th:value="${form.remarks}" placeholder="備考を入力してください"
-									pattern="[\u3040-\u30FF\u4E00-\u9FFF\uFF00-\uFFEF]{1,20}"
+								<input type="text" id="remarks" th:name="|attendanceFormList[${stat.index}].remarks|" th:value="${form.remarks}"
+									placeholder="備考を入力してください" pattern="[\u3040-\u30FF\u4E00-\u9FFF\uFF00-\uFFEF]{1,20}"
 									title="全角文字で20文字以内で入力してください" />
 							</td>
-							<input type="hidden" th:name="|attendanceFormList[${stat.index}].userId|"
-								th:value="${form.userId}" />
+							<input type="hidden" th:name="|attendanceFormList[${stat.index}].userId|" th:value="${form.userId}" />
 						</tr>
 					</tbody>
 				</table>
