@@ -105,9 +105,9 @@
 		FROM monthly_attendance_req t1
 			INNER JOIN users t2 ON t1.user_id = t2.user_id
 		WHERE 
-			YEAR(target_year_month) = #{year}
-    		AND MONTH(target_year_month) = #{month}
-			AND t1.status = 1; 
+<!--			YEAR(target_year_month) = #{year}-->
+<!--    		AND MONTH(target_year_month) = #{month}-->
+			  t1.status = 1; 
 	</select>
 	
 	
