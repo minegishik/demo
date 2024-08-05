@@ -56,10 +56,16 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<td class="w150"></td>
-					<td class="w120"></td>
-					<td class="w120"></td>
+				<tr th:each="monthlyAttendanceDto : ${monthlyAttendanceDtoList}">
+					<td class="w150">
+						
+					</td>
+					<td class="w120">
+						[[${#dates.format(monthlyAttendanceDto.targetYearMonth, "yyyy年M月d日")}]]
+					</td>
+					<td class="w120">
+						[[${#dates.format(monthlyAttendanceDto.date, "yyyy年M月d日")}]]
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -124,37 +130,53 @@
 									th:value="${form.status}" />
 							</td>
 							<td class="w120">
-								
+							
 								<select th:name="|attendanceFormList[${stat.index}].startHour|">
-									<option value="" th:text="'選択してください'" th:selected="${form.startHour == "0"}"></option>
+									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+									<option value="" th:text="--"
+										th:selected="${form.startHour == null || form.startHour.isEmpty() || form.startHour == '0'}"></option>
+									<!-- 時間の選択肢 -->
 									<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
-										th:selected="${form.startHour == hour}">
+										th:selected="${form.startHour != null && !form.startHour.isEmpty() && form.startHour != '0' && form.startHour == hour}">
 									</option>
 								</select>
 								:
+								<!-- 開始分のプルダウンリスト -->
 								<select th:name="|attendanceFormList[${stat.index}].startMinute|">
-									<option value="" th:text="'選択してください'" th:selected="${form.startMinute == null}"></option>
+									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+									<option value="" th:text="--"
+										th:selected="${form.startMinute == null || form.startMinute.isEmpty() || form.startMinute == '0'}"></option>
+									<!-- 分の選択肢 -->
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
-										th:selected="${form.startMinute == minute}"></option>
+										th:selected="${form.startMinute != null && !form.startMinute.isEmpty() && form.startMinute != '0' && form.startMinute == minute}">
+									</option>
 								</select>
-								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|"
-									th:value="${form.startTime}" />
+								<!-- 隠しフィールド -->
+								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|" th:value="${form.startTime}" />
 							</td>
 							<td class="w120">
 								<select th:name="|attendanceFormList[${stat.index}].endHour|">
-									<option value="" th:text="'選択してください'" th:selected="${form.endHour == null}"></option>
+									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+									<option value="" th:text="--"
+										th:selected="${form.endHour == null || form.endHour.isEmpty() || form.endHour == '0'}"></option>
+									<!-- 時間の選択肢 -->
 									<option th:each="hour : ${hours}" th:value="${hour}" th:text="${hour}"
-										th:selected="${form.endHour == hour}">
+										th:selected="${form.endHour != null && !form.endHour.isEmpty() && form.endHour != '0' && form.endHour == hour}">
 									</option>
 								</select>
 								:
+								<!-- 終了分のプルダウンリスト -->
 								<select th:name="|attendanceFormList[${stat.index}].endMinute|">
-									<option value="" th:text="'選択してください'" th:selected="${form.endMinute == null}"></option>
+									<!-- 空の選択肢（表示される選択肢が何も選ばれていない状態） -->
+									<option value="" th:text="--"
+										th:selected="${form.endMinute == null || form.endMinute.isEmpty() || form.endMinute == '0'}"></option>
+									<!-- 分の選択肢 -->
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
-										th:selected="${form.endMinute == minute}"></option>
+										th:selected="${form.endMinute != null && !form.endMinute.isEmpty() && form.endMinute != '0' && form.endMinute == minute}">
+									</option>
 								</select>
-								<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|"
-									th:value="${form.endTime}" />
+								<!-- 隠しフィールド -->
+								<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${form.endTime}" />
 							</td>
 							<td class="w150">
 								<input type="text" id="remarks" th:name="|attendanceFormList[${stat.index}].remarks|"
