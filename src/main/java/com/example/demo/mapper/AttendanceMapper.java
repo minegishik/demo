@@ -105,6 +105,6 @@ public interface AttendanceMapper {
 	 * @param userId
 	 * @return 月次勤怠情報DTO
 	 */
-	List<MonthlyAttendanceDto> monthlyAttendanceReqList(@Param("year") int year, @Param("month") int month);
+	List<MonthlyAttendanceDto> monthlyAttendanceReqList();
 	
 }
