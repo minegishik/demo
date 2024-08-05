@@ -98,4 +98,13 @@ public interface AttendanceMapper {
 	void update(MonthlyAttendance monthlyAttendance);
 
 	void update(MonthlyAttendanceDto searchResult);
+	
+	/**
+	 * 月次勤怠情報の取得
+	 * 
+	 * @param userId
+	 * @return 月次勤怠情報DTO
+	 */
+	List<MonthlyAttendanceDto> monthlyAttendanceReqList(@Param("year") int year, @Param("month") int month);
+	
 }
