@@ -14,13 +14,16 @@ import com.example.demo.dto.MonthlyAttendanceDto;
 import com.example.demo.entity.AttendanceUser;
 import com.example.demo.entity.MonthlyAttendance;
 import com.example.demo.mapper.AttendanceMapper;
+import com.example.demo.util.LoginUserUtil;
 
 @Service
 public class AttendanceService {
 	
 
 	@Autowired
-	AttendanceMapper attendanceMapper;
+	private AttendanceMapper attendanceMapper;
+	@Autowired
+	private LoginUserUtil loginUserUtil;
 	
 	
 	// 時間をHH:mm形式にフォーマットするメソッド
@@ -172,6 +175,32 @@ public class AttendanceService {
 		}
 		
 
+	}
+	
+	
+	/**
+	 * 月次勤怠情報取得
+	 * 
+	 * @param userId
+	 * @param targetYearMonth
+	 * @return
+	 */
+	public List<MonthlyAttendanceDto> getMonthlyAttendanceReq() {
+		
+		
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = new ArrayList<>();
+		
+		if(loginUserUtil.isManager()) {
+			
+			monthlyAttendanceDtoList = attendanceMapper.monthlyAttendanceReqList();
+			
+		} else {
+			throw new SecurityException("権限がありません。");
+		}
+		
+		 
+		 
+		return monthlyAttendanceDtoList;
 	}
 	
 }
