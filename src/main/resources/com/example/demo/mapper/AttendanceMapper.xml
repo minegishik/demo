@@ -95,6 +95,21 @@
 	 		status = #{status} 
 	</update>
 	
+	<select id="monthlyAttendanceReqList" resultType="com.example.demo.dto.MonthlyAttendanceDto">
+		SELECT
+			t1.user_id,
+			t1.target_year_month,
+			t1.date,
+			t1.status,
+			t2.name
+		FROM monthly_attendance_req t1
+			INNER JOIN users t2 ON t1.user_id = t2.user_id
+		WHERE 
+			YEAR(target_year_month) = #{year}
+    		AND MONTH(target_year_month) = #{month}
+			AND t1.status = 1; 
+	</select>
+	
 	
 	
 
