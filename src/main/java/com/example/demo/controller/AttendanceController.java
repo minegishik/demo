@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.dto.MonthlyAttendanceDto;
 import com.example.demo.entity.AttendanceUser;
 import com.example.demo.entity.LoginUser;
 import com.example.demo.form.AttendanceForm;
 import com.example.demo.form.AttendanceFormList;
 import com.example.demo.service.AttendanceService;
 import com.example.demo.service.LoginService;
+import com.example.demo.util.LoginUserUtil;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -34,6 +36,8 @@ public class AttendanceController {
 	LoginService loginService;
 	@Autowired
 	AttendanceService attendanceService;
+	@Autowired
+	LoginUserUtil loginUserUtil;
 
 	/**
 	 * 勤怠登録画面 初期表示
@@ -42,10 +46,16 @@ public class AttendanceController {
 	 * @return　勤怠登録画面
 	 */
 	@RequestMapping("/regist")
-	public String regist(HttpSession session, Model model) {
+	public String regist(HttpSession session, Model model,Integer userId) {
+		
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
+		if(loginUserUtil.isManager()) {
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq(userId);
+		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
+		System.out.println(monthlyAttendanceDtoList);
+		}
 		AttendanceFormList attendanceFormList = new AttendanceFormList();
 		model.addAttribute("attendanceFormList", attendanceFormList);
 
@@ -211,35 +221,16 @@ public class AttendanceController {
 			if (attendanceForm.getStatus() == null) {
 			    attendanceForm.setStatus(99); // デフォルトのステータス
 			}
-			if (attendanceForm.getStartHour() == null) {
-	            attendanceForm.setStartHour("0"); // デフォルトの開始時間（時）
-	        }
-	        if (attendanceForm.getStartMinute() == null) {
-	            attendanceForm.setStartMinute("0"); // デフォルトの開始時間（分）
-	        }
-	        if (attendanceForm.getEndHour() == null) {
-	            attendanceForm.setEndHour("0"); // デフォルトの終了時間（時）
-	        }
-	        if (attendanceForm.getEndMinute() == null) {
-	            attendanceForm.setEndMinute("0"); // デフォルトの終了時間（分）
-	        }
+
+			 // 出勤時間と退勤時間の処理
+	        LocalTime startTime = parseTime(attendanceForm.getStartHour(), attendanceForm.getStartMinute());
+	        LocalTime endTime = parseTime(attendanceForm.getEndHour(), attendanceForm.getEndMinute());
+			
 			LocalDate date = attendanceForm.getDate();
 			
 			if(attendanceForm.getStatus() != null && attendanceForm.getDate() != null) {
 				
-				// 時間を LocalTime に変換
-	            LocalTime startTime = LocalTime.of(
-	                Integer.parseInt(attendanceForm.getStartHour()), 
-	                Integer.parseInt(attendanceForm.getStartMinute())
-	            );
-	            LocalTime endTime = LocalTime.of(
-	                Integer.parseInt(attendanceForm.getEndHour()), 
-	                Integer.parseInt(attendanceForm.getEndMinute())
-	            );
-
-	            // 出勤時間と退勤時間をセット
-	            attendanceForm.setStartTime(startTime);
-	            attendanceForm.setEndTime(endTime);
+				
 				
 				// 日付と曜日のフォーマットをセット
                 String formattedDate = date.format(dateFormatter);
@@ -255,8 +246,8 @@ public class AttendanceController {
 			newAttendance.setUserId(userId);
 			newAttendance.setStatus(attendanceForm.getStatus());
 		    newAttendance.setDate(attendanceForm.getDate());
-			newAttendance.setStartTime(attendanceForm.getStartTime());
-			newAttendance.setEndTime(attendanceForm.getEndTime());
+		    newAttendance.setStartTime(startTime);
+            newAttendance.setEndTime(endTime);
 			newAttendance.setRemarks(attendanceForm.getRemarks());
 			
 			
@@ -273,6 +264,32 @@ public class AttendanceController {
 
 	 
         return displayIn(selectedYear, selectedMonth, formList, session, model);
+	}
+	
+	// 時間を LocalTime に変換するヘルパー関数
+	private LocalTime parseTime(String hourStr, String minuteStr) {
+	    if (hourStr == null || hourStr.isEmpty() || minuteStr == null || minuteStr.isEmpty()) {
+	        return null; // 無効な場合は null
+	    }
+
+	    try {
+	        int hour = Integer.parseInt(hourStr);
+	        int minute = Integer.parseInt(minuteStr);
+
+	        // 時間が 00 で分も 00 の場合は null を返す
+	        if (hour == 0 && minute == 0) {
+	            return null;
+	        }
+
+	        // 分が 00 の場合も、時間が 00 でなければ保存する
+	        if (minute == 0 && hour != 0) {
+	            return LocalTime.of(hour, minute);
+	        }
+
+	        return LocalTime.of(hour, minute);
+	    } catch (NumberFormatException e) {
+	        return null; // 無効な数値の場合も null
+	    }
 	}
 
 	
@@ -307,7 +324,7 @@ public class AttendanceController {
 	/**
 	 * 勤怠登録画面　『却下』ボタン押下
 	 * 
-	 * @return
+	 * @return マネージャー用勤怠管理画面
 	 */
 	public String reject() {
 		return "attendance/regist";
@@ -317,7 +334,7 @@ public class AttendanceController {
 	/**
 	 * 勤怠登録画面 『承認』ボタン押下
 	 * 
-	 * @return
+	 * @return マネージャー用勤怠管理画面
 	 */
 	public String permit() {
 		return "attendance/regist";
