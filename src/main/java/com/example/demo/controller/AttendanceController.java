@@ -54,11 +54,10 @@ public class AttendanceController {
 		model.addAttribute("loginUser", loginUser);
 		
 		
-//		if(loginUserUtil.isManager()) {
+		if(loginUserUtil.isManager()) {
 		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
-//		}
-		
+		}	
 		
 		AttendanceFormList attendanceFormList = new AttendanceFormList();
 		model.addAttribute("attendanceFormList", attendanceFormList);
@@ -93,6 +92,11 @@ public class AttendanceController {
 		// ステータス（承認状況）を表示
 		String statusMessage = attendanceService.checkStatus(userId, year, month);
 		model.addAttribute("statusMessage", statusMessage);
+		
+		boolean isDisabled1 = "承認済".equals(statusMessage);
+		boolean isDisabled2 = "申請中".equals(statusMessage);
+		model.addAttribute("isDisabled1", isDisabled1);
+		model.addAttribute("isDisabled2", isDisabled2);
 
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
