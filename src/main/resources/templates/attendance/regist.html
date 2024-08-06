@@ -77,8 +77,9 @@
 			</tbody>
 		</table>
 		
+		<div th:if="${rejectMessage}" class="success" th:utext="${rejectMessage}"></div>
+		<div th:if="${approvalMessage}" class="success" th:utext="${approvalMessage}"></div>
 		
-
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateForm();">
 
 			<div style="display: flex; justify-content: flex-end;">
