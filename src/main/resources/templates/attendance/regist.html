@@ -120,7 +120,7 @@
 							<td class="w40" th:text="${form.formattedWeek}">
 							</td>
 							<td class="w100">
-								<select th:name="|attendanceFormList[${stat.index}].status|">
+								<select th:name="|attendanceFormList[${stat.index}].status|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
 									<option value="null" th:text="'選択してください'"></option>
 									<option value="0" th:selected="${form.status == 0}">通常出勤</option>
 									<option value="1" th:selected="${form.status == 1}">休日</option>
@@ -139,7 +139,7 @@
 							</td>
 							<td class="w120">
 						
-								<select th:name="|attendanceFormList[${stat.index}].startHour|">
+								<select th:name="|attendanceFormList[${stat.index}].startHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.startHour == null || form.startHour.isEmpty() || form.startHour == '0'}"></option>
@@ -150,7 +150,7 @@
 								</select>
 								:
 						
-								<select th:name="|attendanceFormList[${stat.index}].startMinute|">
+								<select th:name="|attendanceFormList[${stat.index}].startMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.startMinute == null || form.startMinute.isEmpty() || form.startMinute == '0'}">
@@ -161,10 +161,10 @@
 									</option>
 								</select>
 						
-								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|" th:value="${form.startTime}" />
+								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|" th:value="${form.startTime}"/>
 							</td>
 							<td class="w120">
-								<select th:name="|attendanceFormList[${stat.index}].endHour|">
+								<select th:name="|attendanceFormList[${stat.index}].endHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.endHour == null || form.endHour.isEmpty() || form.endHour == '0'}"></option>
@@ -175,13 +175,13 @@
 								</select>
 								:
 						
-								<select th:name="|attendanceFormList[${stat.index}].endMinute|">
+								<select th:name="|attendanceFormList[${stat.index}].endMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
 						
 									<option value="" th:text="--"
-										th:selected="${form.endMinute == null || form.endMinute.isEmpty() || form.endMinute == '0'}"></option>
+										th:selected="${form.endMinute == null || form.endMinute.isEmpty() || form.endMinute == '0'}" th:disabled="${isDisabled1 == true or isDisabled2 == true}"></option>
 						
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
-										th:selected="${form.endMinute != null && !form.endMinute.isEmpty() && form.endMinute != '0' && form.endMinute == minute}">
+										th:selected="${form.endMinute != null && !form.endMinute.isEmpty() && form.endMinute != '0' && form.endMinute == minute}" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
 									</option>
 								</select>
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${form.endTime}" />
@@ -189,7 +189,7 @@
 							<td class="w150">
 								<input type="text" id="remarks" th:name="|attendanceFormList[${stat.index}].remarks|" th:value="${form.remarks}"
 									placeholder="備考を入力してください" pattern="[\u3040-\u30FF\u4E00-\u9FFF\uFF00-\uFFEF]{1,20}"
-									title="全角文字で20文字以内で入力してください" />
+									title="全角文字で20文字以内で入力してください" th:disabled="${isDisabled1 == true or isDisabled2 == true}"/>
 							</td>
 							<input type="hidden" th:name="|attendanceFormList[${stat.index}].userId|" th:value="${form.userId}" />
 						</tr>
