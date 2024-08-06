@@ -193,18 +193,13 @@ public class AttendanceController {
 
 			form.add(attendanceForm); // フォームリストに追加する
 
-			if (attendanceForm.getStatus() != null) {
-				
-				boolean isDisabled1 = "承認済".equals(statusMessage);
-				boolean isDisabled2 = "申請中".equals(statusMessage);
-				model.addAttribute("isDisabled1", isDisabled1);
-				model.addAttribute("isDisabled2", isDisabled2);
-				
-			} else {
-				// getStatus()がnullの場合にボタン非活性にする
-				model.addAttribute("isDisabled1", true);
-				model.addAttribute("isDisabled2", true);
-			}
+			// 申請のステータスに応じてフラグを設定
+		    boolean isDisabled1 = "承認済".equals(statusMessage); // 承認済の時に非活性
+		    boolean isDisabled2 = "申請中".equals(statusMessage); // 申請中の時に非活性
+
+		    // 未申請の場合は非活性にしない
+		    model.addAttribute("isDisabled1", isDisabled1);
+		    model.addAttribute("isDisabled2", isDisabled2);
 			
 		}
 
