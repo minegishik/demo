@@ -183,7 +183,7 @@ public class AttendanceService {
 	 * @param targetYearMonth
 	 * @return
 	 */
-	public List<MonthlyAttendanceDto> getMonthlyAttendanceReq(int year, int month) {
+	public List<MonthlyAttendanceDto> getMonthlyAttendanceReq() {
 		
 		
 		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = new ArrayList<>();
