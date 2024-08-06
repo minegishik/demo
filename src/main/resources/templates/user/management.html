@@ -48,7 +48,7 @@
 				<label>利用開始日:</label>
 				<input type="text" name="startDate"
 					th:value="${user != null ? #dates.format(user.startDate, 'yyyy-MM-dd') : ''}"
-					placeholder="yyyy-MM-dd" class="textbox"/>
+					placeholder="例:1998-02-04" class="textbox"/>
 			</div>
 
 			<input type="submit" class="btn-mgmt-regist" value="登録" name="regist" />
