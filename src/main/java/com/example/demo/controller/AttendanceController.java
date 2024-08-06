@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -342,7 +341,7 @@ public class AttendanceController {
 	
 	
 	/**
-	 * 勤怠登録画面 ユーザー名リンクボタン押下
+	 * 勤怠登録画面 ユーザー名ボタン押下
 	 * 
 	 * @param userId
 	 * @param year
@@ -351,37 +350,98 @@ public class AttendanceController {
 	 * @param session
 	 * @return
 	 */
-	@GetMapping("/monthlyAttendanceReq")
-	public String monthlyAttendanceReq(@RequestParam("userId") int userId,
-            @RequestParam("year") int year,
-            @RequestParam("month") int month,
-            Model model,
-            HttpSession session) {
+	@PostMapping(path = "/regist", params = "attendance")
+	public String monthlyAttendanceReq(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month,
+			@ModelAttribute AttendanceFormList formList,
+			HttpSession session, Model model) {
 		
-		 // セッションからログインユーザーの情報を取得
-	    LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
-	    
-	    // 月別の勤怠データを取得
-	    List<AttendanceUser> attendanceForms = attendanceService.getAttendanceYearMonth(userId, year, month);
-	    
-	    // 時間リスト
+		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+		int userId = loginUser.getUserId();
+		model.addAttribute("selectedYear", year);
+		model.addAttribute("selectedMonth", month);
+		session.setAttribute("selectedYear", year);
+        session.setAttribute("selectedMonth", month);
+		
+		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
+		model.addAttribute("calendar", calendar);
+
+		List<AttendanceUser> attendanceList = attendanceService.getAttendanceYearMonth(userId, year, month);
+		model.addAttribute("attendanceList", attendanceList);
+		System.out.println(attendanceList);
+		
+		// 時間と分のリストを生成
 	    List<String> hours = IntStream.range(0, 24)
 	            .mapToObj(i -> String.format("%02d", i))
 	            .collect(Collectors.toList());
 	    List<String> minutes = IntStream.range(0, 60)
 	            .mapToObj(i -> String.format("%02d", i))
 	            .collect(Collectors.toList());
-	    
-	    model.addAttribute("attendanceFormList", attendanceForms);
+
 	    model.addAttribute("hours", hours);
 	    model.addAttribute("minutes", minutes);
 	    
-	    // マネージャーの場合
-	    if ("0002".equals(loginUser.getRole())) {
-	        List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq(year, month);
-	        model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
-	        return "attendance/managerView"; // マネージャー用のビュー
-	    }
+		//比較
+		for (AttendanceUser day : calendar) {
+			boolean found = false;
+			for (AttendanceUser attendance : attendanceList) {
+				if (day.getDate().equals(attendance.getDate())) {
+					day.setAttendanceId(attendance.getAttendanceId());
+					day.setUserId(attendance.getUserId());
+					day.setStatus(attendance.getStatus());
+					day.setStartTime(attendance.getStartTime());
+					day.setEndTime(attendance.getEndTime());
+					day.setRemarks(attendance.getRemarks());
+
+				}
+			}
+
+			if (!found) {
+				day.setDate(day.getDate());
+			}
+		}
+
+		//フォームに詰替え
+		List<AttendanceForm> form = new ArrayList<AttendanceForm>();
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d");
+		DateTimeFormatter dayOfWeekFormatter = DateTimeFormatter.ofPattern("E");
+
+		for (AttendanceUser day2 : calendar) {
+			AttendanceForm attendanceForm = new AttendanceForm();
+			attendanceForm.setUserId(loginUser.getUserId());
+			attendanceForm.setStatus(day2.getStatus());
+			attendanceForm.setDate(day2.getDate());
+			attendanceForm.setStartTime(day2.getStartTime());
+			attendanceForm.setEndTime(day2.getEndTime());
+			attendanceForm.setRemarks(day2.getRemarks());
+
+			
+			// 日付と曜日のフォーマットをセット
+			// 日付と曜日のフォーマットをセット
+			String formattedDate = day2.getDate().format(dateFormatter);
+			attendanceForm.setFormattedDate(formattedDate);
+			String formattedDayOfWeek = day2.getDate().format(dayOfWeekFormatter);
+			attendanceForm.setFormattedWeek(formattedDayOfWeek);
+			
+			
+			// 時間の分割処理
+	        if (day2.getStartTime() != null) {
+	            attendanceForm.setStartHour(String.format("%02d", day2.getStartTime().getHour())); // 時
+	            attendanceForm.setStartMinute(String.format("%02d", day2.getStartTime().getMinute())); // 分
+	        }
+	        if (day2.getEndTime() != null) {
+	            attendanceForm.setEndHour(String.format("%02d", day2.getEndTime().getHour())); // 時
+	            attendanceForm.setEndMinute(String.format("%02d", day2.getEndTime().getMinute())); // 分
+	        }
+
+
+			form.add(attendanceForm); // フォームリストに追加する
+
+		}
+
+		formList.setAttendanceFormList(form);
+		model.addAttribute("formList", formList);
+	    
         
 		return "attendance/regist";
 	}
