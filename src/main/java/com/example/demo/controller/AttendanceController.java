@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.dto.MonthlyAttendanceDto;
 import com.example.demo.entity.AttendanceUser;
 import com.example.demo.entity.LoginUser;
+import com.example.demo.entity.MonthlyAttendance;
 import com.example.demo.form.AttendanceForm;
 import com.example.demo.form.AttendanceFormList;
 import com.example.demo.service.AttendanceService;
@@ -492,7 +493,12 @@ public class AttendanceController {
 	 * 
 	 * @return マネージャー用勤怠管理画面
 	 */
-	public String reject() {
+	@PostMapping(path = "/regist", params = "reject")
+	public String reject(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model) {
+		attendanceService.rejected(userId, targetYearMonth, monthlyAttendance);
+		
+		String rejectMessage = "承認を却下しました。";
+		model.addAttribute("rejectMessage", rejectMessage);
 		return "attendance/regist";
 	}
 	
@@ -502,7 +508,12 @@ public class AttendanceController {
 	 * 
 	 * @return マネージャー用勤怠管理画面
 	 */
-	public String permit() {
+	@PostMapping(path = "/regist", params = "approval")
+	public String permit(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model) {
+		attendanceService.approve(userId, targetYearMonth, monthlyAttendance);
+		
+		String approvalMessage = "承認しました。";
+		model.addAttribute("approvalMessage", approvalMessage);
 		return "attendance/regist";
 	}
 	
