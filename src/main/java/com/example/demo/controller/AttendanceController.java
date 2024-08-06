@@ -267,10 +267,7 @@ public class AttendanceController {
 
 //	    // 新しい勤怠情報の登録処理
 		for (AttendanceForm attendanceForm : formList.getAttendanceFormList()) {
-			if (attendanceForm.getStatus() == null) {
-			    attendanceForm.setStatus(99); // デフォルトのステータス
-			}
-
+			
 			 // 出勤時間と退勤時間の処理
 	        LocalTime startTime = parseTime(attendanceForm.getStartHour(), attendanceForm.getStartMinute());
 	        LocalTime endTime = parseTime(attendanceForm.getEndHour(), attendanceForm.getEndMinute());
