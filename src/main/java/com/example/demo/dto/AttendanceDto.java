@@ -29,5 +29,9 @@ public class AttendanceDto {
 	private String formattedDate;
 	//フォーマット変更した曜日
 	private String formattedWeek;
+	//
+	private Integer year;
+	
+	private Integer month;
 
 }
