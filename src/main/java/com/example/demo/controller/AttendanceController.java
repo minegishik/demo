@@ -94,8 +94,10 @@ public class AttendanceController {
         }
 		
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
-		 model.addAttribute("years", years);
-	       model.addAttribute("months", months);
+		model.addAttribute("years", years);
+	    model.addAttribute("months", months);
+	    session.setAttribute("years", years);
+	    session.setAttribute("months", months);
 		
 		}	
 		
@@ -397,6 +399,16 @@ public class AttendanceController {
 			HttpSession session, Model model) {
 		
 		displayIn(year, month, formList, session, model);
+		
+		// セッションから選択された年月を取得
+		@SuppressWarnings("unchecked")
+		List<Integer> years = (List<Integer>) session.getAttribute("years");
+		@SuppressWarnings("unchecked")
+		List<Integer> months = (List<Integer>) session.getAttribute("months");
+
+		// モデルに追加
+		model.addAttribute("years", years);
+		model.addAttribute("months", months);
 		
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
