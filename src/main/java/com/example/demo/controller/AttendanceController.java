@@ -75,11 +75,6 @@ public class AttendanceController {
                 Integer selectMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH は 0 から始まるので +1 する
                 dto.setYear(selectYear);
                 dto.setMonth(selectMonth);
-                System.out.println(dto.getYear());
-                System.out.println(dto.getMonth());
-                System.out.println(dto.getUserId());
-               
-                
                 
             }
         }
@@ -485,9 +480,7 @@ public class AttendanceController {
 	                Integer selectMonth = calendar1.get(Calendar.MONTH) + 1; // Calendar.MONTH は 0 から始まるので +1 する
 	                dto.setYear(selectYear);
 	                dto.setMonth(selectMonth);
-	                System.out.println(dto.getYear());
-	                System.out.println(dto.getMonth());
-	                System.out.println(dto.getUserId());
+	                
 	            }
 		 }
 		
@@ -503,7 +496,7 @@ public class AttendanceController {
 	 * @return マネージャー用勤怠管理画面
 	 */
 	@PostMapping(path = "/regist", params = "reject")
-	public String reject(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model,
+	public String reject(Integer userId, MonthlyAttendance monthlyAttendance, Model model,
 			HttpSession session, Integer year, Integer month, AttendanceFormList formList) {
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
@@ -514,6 +507,30 @@ public class AttendanceController {
 
 		String rejectMessage = "申請を却下しました。";
 		model.addAttribute("rejectMessage", rejectMessage);
+		
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+		
+		 for (MonthlyAttendanceDto dto : monthlyAttendanceDtoList) {
+	            Date targetYearMonth = dto.getTargetYearMonth();
+	            if (targetYearMonth != null) {
+	                // Date を Calendar で扱う
+	                Calendar calendar3 = Calendar.getInstance();
+	                calendar3.setTime(targetYearMonth);
+	                
+
+	                // 年と月を抽出
+	                Integer selectYear = calendar3.get(Calendar.YEAR);
+	                Integer selectMonth = calendar3.get(Calendar.MONTH) + 1; // Calendar.MONTH は 0 から始まるので +1 する
+	                dto.setYear(selectYear);
+	                dto.setMonth(selectMonth);
+	                
+	            }
+		 }
+		
+		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
+		
+		regist(session,model);
+		
 		return "attendance/regist";
 	}
 	
@@ -524,7 +541,7 @@ public class AttendanceController {
 	 * @return マネージャー用勤怠管理画面
 	 */
 	@PostMapping(path = "/regist", params = "approval")
-	public String permit(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model,
+	public String permit(Integer userId, MonthlyAttendance monthlyAttendance, Model model,
 			HttpSession session, Integer year, Integer month, AttendanceFormList formList) {
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
@@ -535,6 +552,31 @@ public class AttendanceController {
 
 		String approvalMessage = "申請を承認しました。";
 		model.addAttribute("approvalMessage", approvalMessage);
+		
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+		
+		 for (MonthlyAttendanceDto dto : monthlyAttendanceDtoList) {
+	            Date targetYearMonth = dto.getTargetYearMonth();
+	            if (targetYearMonth != null) {
+	                // Date を Calendar で扱う
+	                Calendar calendar2 = Calendar.getInstance();
+	                calendar2.setTime(targetYearMonth);
+	                
+
+	                // 年と月を抽出
+	                Integer selectYear = calendar2.get(Calendar.YEAR);
+	                Integer selectMonth = calendar2.get(Calendar.MONTH) + 1; // Calendar.MONTH は 0 から始まるので +1 する
+	                dto.setYear(selectYear);
+	                dto.setMonth(selectMonth);
+	                
+	            }
+		 }
+		
+		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
+		
+		regist(session,model);
+		
+		
 		return "attendance/regist";
 	}
 	
