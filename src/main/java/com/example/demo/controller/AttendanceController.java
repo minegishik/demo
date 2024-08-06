@@ -79,6 +79,8 @@ public class AttendanceController {
                 dto.setMonth(selectMonth);
                 System.out.println(dto.getYear());
                 System.out.println(dto.getMonth());
+                System.out.println(dto.getUserId());
+               
                 
                 // リストに追加（重複チェックなし）
                 if (!years.contains(selectYear)) {
@@ -389,24 +391,22 @@ public class AttendanceController {
 	 * @return
 	 */
 	@PostMapping(path = "/regist", params = "attendance")
-	public String monthlyAttendanceReq(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month,
+	public String monthlyAttendanceReq(@RequestParam("selectYear") Integer year, @RequestParam("selectMonth") Integer month,@RequestParam("user") Integer userId,
 			@ModelAttribute AttendanceFormList formList,
 			HttpSession session, Model model) {
 		
+		displayIn(year, month, formList, session, model);
+		
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
-		int userId = loginUser.getUserId();
-		model.addAttribute("selectedYear", year);
-		model.addAttribute("selectedMonth", month);
-		session.setAttribute("selectedYear", year);
-        session.setAttribute("selectedMonth", month);
+		
 		
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
 
 		List<AttendanceUser> attendanceList = attendanceService.getAttendanceYearMonth(userId, year, month);
 		model.addAttribute("attendanceList", attendanceList);
-		System.out.println(attendanceList);
+		
 		
 		// 時間と分のリストを生成
 	    List<String> hours = IntStream.range(0, 24)
@@ -446,7 +446,7 @@ public class AttendanceController {
 
 		for (AttendanceUser day2 : calendar) {
 			AttendanceForm attendanceForm = new AttendanceForm();
-			attendanceForm.setUserId(loginUser.getUserId());
+			attendanceForm.setUserId(day2.getUserId());
 			attendanceForm.setStatus(day2.getStatus());
 			attendanceForm.setDate(day2.getDate());
 			attendanceForm.setStartTime(day2.getStartTime());
@@ -479,6 +479,9 @@ public class AttendanceController {
 
 		formList.setAttendanceFormList(form);
 		model.addAttribute("formList", formList);
+		
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
 	    
         
 		return "attendance/regist";
