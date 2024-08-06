@@ -5,7 +5,6 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dto.MonthlyAttendanceDto;
 import com.example.demo.entity.AttendanceUser;
 import com.example.demo.entity.MonthlyAttendance;
+import com.example.demo.form.AttendanceFormList;
 import com.example.demo.mapper.AttendanceMapper;
 import com.example.demo.util.LoginUserUtil;
 
@@ -209,13 +209,9 @@ public class AttendanceService {
 	 * @param targetYearMonth
 	 * @param monthlyAttendance
 	 */
-	public void rejected(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance) {
-		attendanceMapper.updateApprovalStatus(userId, targetYearMonth);
-		// ステータスを却下に変更
-		monthlyAttendance.setStatus((short) 3);
+	public void rejected(AttendanceFormList formList) {
 		
-		System.out.println(monthlyAttendance.getStatus());
-		
+		attendanceMapper.rejectApprovalStatus(formList.getAttendanceFormList().get(0).getUserId(), formList.getAttendanceFormList().get(0).getDate());
 	}
 	
 	/**
@@ -225,12 +221,8 @@ public class AttendanceService {
 	 * @param targetYearMonth
 	 * @param monthlyAttendance
 	 */
-	public void approve(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance) {
-		attendanceMapper.updateApprovalStatus(userId, targetYearMonth);
-		// ステータスを承認済に変更
-		monthlyAttendance.setStatus((short) 2);
-		
-		System.out.println(monthlyAttendance.getStatus());
+	public void approve(AttendanceFormList formList) {
+		attendanceMapper.approvalStatus(formList.getAttendanceFormList().get(0).getUserId(), formList.getAttendanceFormList().get(0).getDate());
 	}
 	
 }
