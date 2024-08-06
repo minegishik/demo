@@ -77,8 +77,7 @@
 			</tbody>
 		</table>
 		
-		<div th:if="${rejectMessage}" class="success" th:utext="${rejectMessage}"></div>
-		<div th:if="${approvalMessage}" class="success" th:utext="${approvalMessage}"></div>
+		
 		
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateForm();">
 
@@ -92,9 +91,11 @@
 				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" />
 			</div>
 			
-			<div th:if="${successMessage}" class="regist-message" role="alert">
-            <p th:text="${successMessage}"></p>
-        </div>
+			<div th:if="${successMessage}" class="success" role="alert">
+				<p th:text="${successMessage}"></p>
+			</div>
+			<div th:if="${rejectMessage}" class="success" th:utext="${rejectMessage}"></div>
+			<div th:if="${approvalMessage}" class="success" th:utext="${approvalMessage}"></div>
         
         <div th:if="${message}" class="success" th:utext="${message}" ></div>
 			
