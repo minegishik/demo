@@ -47,7 +47,7 @@ public class AttendanceController {
 	 * @return　勤怠登録画面
 	 */
 	@RequestMapping("/regist")
-	public String regist(HttpSession session, Model model) {
+	public String regist(HttpSession session, Model model, Integer year, Integer month) {
 		
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
@@ -55,7 +55,7 @@ public class AttendanceController {
 		
 		
 		if(loginUserUtil.isManager()) {
-		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq(year, month);
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
 		}	
 		
@@ -93,10 +93,6 @@ public class AttendanceController {
 		String statusMessage = attendanceService.checkStatus(userId, year, month);
 		model.addAttribute("statusMessage", statusMessage);
 		
-		boolean isDisabled1 = "承認済".equals(statusMessage);
-		boolean isDisabled2 = "申請中".equals(statusMessage);
-		model.addAttribute("isDisabled1", isDisabled1);
-		model.addAttribute("isDisabled2", isDisabled2);
 
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
@@ -171,6 +167,19 @@ public class AttendanceController {
 
 			form.add(attendanceForm); // フォームリストに追加する
 
+			if (attendanceForm.getStatus() != null) {
+				
+				boolean isDisabled1 = "承認済".equals(statusMessage);
+				boolean isDisabled2 = "申請中".equals(statusMessage);
+				model.addAttribute("isDisabled1", isDisabled1);
+				model.addAttribute("isDisabled2", isDisabled2);
+				
+			} else {
+				// getStatus()がnullの場合にボタン非活性にする
+				model.addAttribute("isDisabled1", true);
+				model.addAttribute("isDisabled2", true);
+			}
+			
 		}
 
 		formList.setAttendanceFormList(form);
@@ -179,6 +188,7 @@ public class AttendanceController {
 		// 時間の選択肢の準備
 	    model.addAttribute("hours", hours);
 	    model.addAttribute("minutes", minutes);
+	    
 
 		return "attendance/regist";
 	}
@@ -312,7 +322,7 @@ public class AttendanceController {
 	 */
 	@PostMapping(path = "/regist", params = "apprication")
 	public String approve(@RequestParam(required = false) Integer year,@RequestParam(required = false) Integer month, HttpSession session, Model model,
-			RedirectAttributes redirectAttribute) {
+			RedirectAttributes redirectAttribute, @ModelAttribute AttendanceFormList formList) {
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
@@ -324,9 +334,10 @@ public class AttendanceController {
 		String message = attendanceService.getMonthlyAttendance(userId, year, month);
 		redirectAttribute.addFlashAttribute("message", message);
 
-		model.addAttribute(message);
+		model.addAttribute("message", message);
+		
 
-		return "redirect:/attendance/regist";
+		return displayIn(year, month, formList, session, model);
 	}
 	
 	
@@ -367,7 +378,7 @@ public class AttendanceController {
 	    
 	    // マネージャーの場合
 	    if ("0002".equals(loginUser.getRole())) {
-	        List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+	        List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq(year, month);
 	        model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
 	        return "attendance/managerView"; // マネージャー用のビュー
 	    }
