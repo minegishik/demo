@@ -112,8 +112,6 @@ public class AttendanceService {
 		YearMonth yearMonth = YearMonth.of(year, month);
 		LocalDate targetYearMonth = yearMonth.atDay(1);
 		
-		System.out.println(year);
-		System.out.println(month);
 
 		MonthlyAttendance searchResult = attendanceMapper.findMonthlyAttendanceByUserAndMonth(userId,
 				java.sql.Date.valueOf(targetYearMonth));
@@ -160,7 +158,7 @@ public class AttendanceService {
 		} 
 		MonthlyAttendanceDto dto = searchResult.get(0);
 		Short status = dto.getStatus();
-		System.out.println(dto.getStatus());
+		
 		
 		// ステータスに応じて結果を返す
 		switch (status) {
@@ -185,7 +183,7 @@ public class AttendanceService {
 	 * @param targetYearMonth
 	 * @return
 	 */
-	public List<MonthlyAttendanceDto> getMonthlyAttendanceReq() {
+	public List<MonthlyAttendanceDto> getMonthlyAttendanceReq(int year, int month) {
 		
 		
 		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = new ArrayList<>();
