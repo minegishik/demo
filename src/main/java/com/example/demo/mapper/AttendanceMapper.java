@@ -108,12 +108,18 @@ public interface AttendanceMapper {
 	List<MonthlyAttendanceDto> monthlyAttendanceReqList();
 	
 	/**
-	 * 承認結果
+	 * 承認申請の却下
 	 * 
 	 * @param userId
-	 * @param targetYearMonth
-	 * @return
+	 * @param date
 	 */
-	void updateApprovalStatus(@Param("userId") Integer userId, @Param("targetYearMonth") Date targetYearMonth);
+	void rejectApprovalStatus(Integer userId , LocalDate date);
 	
+	/**
+	 * 承認申請の承認
+	 * 
+	 * @param userId
+	 * @param date
+	 */
+	void approvalStatus(Integer userId , LocalDate date);
 }
