@@ -82,8 +82,8 @@
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateForm();">
 
 			<div style="display: flex; justify-content: flex-end;">
-				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
-				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" />
+				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" name="reject" />
+				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" name="approval" />
 				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" th:if="${session.loginUser.role == '0004'}" name="apprication" 
 				th:disabled="${isDisabled1 == true or isDisabled2 == true}"/>
 				<input type="hidden" name="year" th:value="${param.year}" />
