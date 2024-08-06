@@ -58,7 +58,7 @@
 			<tbody>
 				<tr th:each="monthlyAttendanceDto : ${monthlyAttendanceDtoList}">
 					<td class="w150">
-						<form>
+						<form th:action="@{/attendance/regist}" method="post">
 							<input type="hidden" name="userId" th:value="${monthlyAttendanceDto.userId}" />
 							<input type="hidden" name="yaer" th:value="${monthlyAttendanceDto.year}" />
 							 <input type="hidden" name="month" th:value="${monthlyAttendanceDto.month}" />
