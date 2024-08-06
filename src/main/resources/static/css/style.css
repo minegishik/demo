@@ -154,6 +154,13 @@ th, td {
 	border-radius: 10px;
 }
 
+.hidden-button{
+	border: none; /* 枠線を非表示にする */
+    background: none; /* 背景色を透明にする */
+    font-size: 20px;
+    cursor: pointer; /* カーソルをポインタにする */
+    border-bottom:1px solid #2fa4e7;
+}
 
 fieldset {
 	margin-top: 100px;
