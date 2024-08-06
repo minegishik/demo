@@ -503,10 +503,16 @@ public class AttendanceController {
 	 * @return マネージャー用勤怠管理画面
 	 */
 	@PostMapping(path = "/regist", params = "reject")
-	public String reject(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model) {
-		attendanceService.rejected(userId, targetYearMonth, monthlyAttendance);
+	public String reject(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model,
+			HttpSession session, Integer year, Integer month, AttendanceFormList formList) {
+		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+
+		attendanceService.rejected(formList);
 		
-		String rejectMessage = "承認を却下しました。";
+		formList.getAttendanceFormList().get(0).getDate();
+
+		String rejectMessage = "申請を却下しました。";
 		model.addAttribute("rejectMessage", rejectMessage);
 		return "attendance/regist";
 	}
@@ -518,10 +524,16 @@ public class AttendanceController {
 	 * @return マネージャー用勤怠管理画面
 	 */
 	@PostMapping(path = "/regist", params = "approval")
-	public String permit(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model) {
-		attendanceService.approve(userId, targetYearMonth, monthlyAttendance);
-		
-		String approvalMessage = "承認しました。";
+	public String permit(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance, Model model,
+			HttpSession session, Integer year, Integer month, AttendanceFormList formList) {
+		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
+		model.addAttribute("loginUser", loginUser);
+
+		attendanceService.approve(formList);
+
+		formList.getAttendanceFormList().get(0).getDate();
+
+		String approvalMessage = "申請を承認しました。";
 		model.addAttribute("approvalMessage", approvalMessage);
 		return "attendance/regist";
 	}
