@@ -3,9 +3,11 @@ package com.example.demo.dto;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
+@Component
 @Data
 public class MonthlyAttendanceDto {
 	// 申請ID
