@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,6 +200,37 @@ public class AttendanceService {
 		 
 		 
 		return monthlyAttendanceDtoList;
+	}
+	
+	/**
+	 * 承認申請 却下処理
+	 * 
+	 * @param userId
+	 * @param targetYearMonth
+	 * @param monthlyAttendance
+	 */
+	public void rejected(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance) {
+		attendanceMapper.updateApprovalStatus(userId, targetYearMonth);
+		// ステータスを却下に変更
+		monthlyAttendance.setStatus((short) 3);
+		
+		System.out.println(monthlyAttendance.getStatus());
+		
+	}
+	
+	/**
+	 * 承認申請 承認処理
+	 * 
+	 * @param userId
+	 * @param targetYearMonth
+	 * @param monthlyAttendance
+	 */
+	public void approve(Integer userId, Date targetYearMonth, MonthlyAttendance monthlyAttendance) {
+		attendanceMapper.updateApprovalStatus(userId, targetYearMonth);
+		// ステータスを承認済に変更
+		monthlyAttendance.setStatus((short) 2);
+		
+		System.out.println(monthlyAttendance.getStatus());
 	}
 	
 }
