@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -38,6 +40,8 @@ public class AttendanceController {
 	AttendanceService attendanceService;
 	@Autowired
 	LoginUserUtil loginUserUtil;
+	@Autowired
+	MonthlyAttendanceDto monthlyAttendanceDto;
 
 	/**
 	 * 勤怠登録画面 初期表示
@@ -46,7 +50,7 @@ public class AttendanceController {
 	 * @return　勤怠登録画面
 	 */
 	@RequestMapping("/regist")
-	public String regist(HttpSession session, Model model, Integer year, Integer month) {
+	public String regist(HttpSession session, Model model) {
 		
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
@@ -54,8 +58,42 @@ public class AttendanceController {
 		
 		
 		if(loginUserUtil.isManager()) {
-		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq(year, month);
+		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+		
+		// 年と月を格納するリストを作成
+        List<Integer> years = new ArrayList<>();
+        List<Integer> months = new ArrayList<>();
+        
+        for (MonthlyAttendanceDto dto : monthlyAttendanceDtoList) {
+            Date targetYearMonth = dto.getTargetYearMonth();
+            if (targetYearMonth != null) {
+                // Date を Calendar で扱う
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(targetYearMonth);
+                
+
+                // 年と月を抽出
+                Integer selectYear = calendar.get(Calendar.YEAR);
+                Integer selectMonth = calendar.get(Calendar.MONTH) + 1; // Calendar.MONTH は 0 から始まるので +1 する
+                dto.setYear(selectYear);
+                dto.setMonth(selectMonth);
+                System.out.println(dto.getYear());
+                System.out.println(dto.getMonth());
+                
+                // リストに追加（重複チェックなし）
+                if (!years.contains(selectYear)) {
+                    years.add(selectYear);
+                }
+                if (!months.contains(selectMonth)) {
+                    months.add(selectMonth);
+                }
+            }
+        }
+		
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
+		 model.addAttribute("years", years);
+	       model.addAttribute("months", months);
+		
 		}	
 		
 		AttendanceFormList attendanceFormList = new AttendanceFormList();
