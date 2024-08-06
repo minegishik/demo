@@ -16,7 +16,7 @@
 		<div class="component">
 			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
 			<p>ユーザID: <span th:text="${loginUser.userId}"></span></p>
-			<p>ステータス:<span th:text="${statusMessage}"></span></p>
+			<p th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}">ステータス:<span th:text="${statusMessage}"></span></p>
 		</div>
 
 		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" th:object="${formList}">
