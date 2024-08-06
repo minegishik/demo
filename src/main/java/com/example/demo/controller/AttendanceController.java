@@ -61,9 +61,6 @@ public class AttendanceController {
 		if(loginUserUtil.isManager()) {
 		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
 		
-		// 年と月を格納するリストを作成
-        List<Integer> years = new ArrayList<>();
-        List<Integer> months = new ArrayList<>();
         
         for (MonthlyAttendanceDto dto : monthlyAttendanceDtoList) {
             Date targetYearMonth = dto.getTargetYearMonth();
@@ -83,21 +80,13 @@ public class AttendanceController {
                 System.out.println(dto.getUserId());
                
                 
-                // リストに追加（重複チェックなし）
-                if (!years.contains(selectYear)) {
-                    years.add(selectYear);
-                }
-                if (!months.contains(selectMonth)) {
-                    months.add(selectMonth);
-                }
+                
             }
         }
 		
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
-		model.addAttribute("years", years);
-	    model.addAttribute("months", months);
-	    session.setAttribute("years", years);
-	    session.setAttribute("months", months);
+
+	    
 		
 		}	
 		
@@ -398,17 +387,8 @@ public class AttendanceController {
 			@ModelAttribute AttendanceFormList formList,
 			HttpSession session, Model model) {
 		
-		displayIn(year, month, formList, session, model);
+//		displayIn(year, month, formList, session, model);
 		
-		// セッションから選択された年月を取得
-		@SuppressWarnings("unchecked")
-		List<Integer> years = (List<Integer>) session.getAttribute("years");
-		@SuppressWarnings("unchecked")
-		List<Integer> months = (List<Integer>) session.getAttribute("months");
-
-		// モデルに追加
-		model.addAttribute("years", years);
-		model.addAttribute("months", months);
 		
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
@@ -494,6 +474,26 @@ public class AttendanceController {
 		model.addAttribute("formList", formList);
 		
 		List<MonthlyAttendanceDto> monthlyAttendanceDtoList = attendanceService.getMonthlyAttendanceReq();
+		
+		 for (MonthlyAttendanceDto dto : monthlyAttendanceDtoList) {
+	            Date targetYearMonth = dto.getTargetYearMonth();
+	            if (targetYearMonth != null) {
+	                // Date を Calendar で扱う
+	                Calendar calendar1 = Calendar.getInstance();
+	                calendar1.setTime(targetYearMonth);
+	                
+
+	                // 年と月を抽出
+	                Integer selectYear = calendar1.get(Calendar.YEAR);
+	                Integer selectMonth = calendar1.get(Calendar.MONTH) + 1; // Calendar.MONTH は 0 から始まるので +1 する
+	                dto.setYear(selectYear);
+	                dto.setMonth(selectMonth);
+	                System.out.println(dto.getYear());
+	                System.out.println(dto.getMonth());
+	                System.out.println(dto.getUserId());
+	            }
+		 }
+		
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
 	    
         
