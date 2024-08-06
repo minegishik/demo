@@ -145,6 +145,11 @@ th, td {
 	justify-content: flex-end !important;
 }
 
+.btn-mgmt-regist:hover {
+	background-color: #F0E68C;
+	/* ホバー時の背景色 */
+}
+
 .btn-default {
 	color: #ffffff;
 	background-color: #2fa4e7;
