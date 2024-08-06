@@ -109,6 +109,16 @@
 	</select>
 	
 	
+	<update id="updateApprovalStatus" parameterType="com.example.demo.entity.MonthlyAttendance">
+		UPDATE monthly_attendance_req
+		SET
+			status = #{status}
+		WHERE
+			user_id = #{userId}
+				AND target_year_month = #{targetYearMonth}
+	</update>
+	
+	
 	
 
 </mapper>
