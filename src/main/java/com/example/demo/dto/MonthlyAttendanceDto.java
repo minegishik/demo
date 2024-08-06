@@ -12,13 +12,19 @@ public class MonthlyAttendanceDto {
 		private Integer id;
 		// 申請者ID
 		private Integer userId;
-		// 対象年月
+		// 申請対象年月
 		@DateTimeFormat(pattern = "yyyy-MM")
 		private Date targetYearMonth;
-		// 対象日
+		// 申請日
 		@DateTimeFormat(pattern = "yyyy-MM-dd")
 		private Date date;
 		// 承認状況
 		private Short status;
+		//ユーザー名
+		private String name;
+		//年
+		private Integer year;
+		//月
+		private Integer month;
 
 }
