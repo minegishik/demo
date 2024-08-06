@@ -27,51 +27,45 @@ function togglePasswordVisibility() {
 function validateForm() {
 	var userId = document.getElementById("textUserId").value.trim();
 	var password = document.getElementById("textPassword").value.trim();
-	var errorMessages = [];
+	var errorMessages = "ユーザーID、パスワードが不正、もしくはユーザーが無効です。";
 
 	// ログインIDチェック
 	if (userId === "") {
-		errorMessages.push("ログインIDを入力してください。");
-	} else {
-		if (userId.length > 16) {
-			errorMessages.push("ログインIDは16文字以内で入力してください。");
-		}
-		if (/[\u3000-\u303F\u4E00-\u9FFF\uFF00-\uFFEF]/.test(userId)) { // 全角文字をチェック
-			errorMessages.push("ログインIDは半角文字で入力してください。");
-		}
+		errorMessages.push(errorMessages);
 	}
-
-		// パスワードチェック
-		if (password === "") {
-			errorMessages.push("パスワードを入力してください。");
-		} else {
-			// パスワードの文字数チェック
-			if (password.length > 16) {
-				errorMessages.push("パスワードは16文字以内で入力してください。");
-			}
-			// パスワードの全角文字チェック
-			if (/[\u3000-\u303F\u4E00-\u9FFF\uFF00-\uFFEF]/.test(password)) {
-				errorMessages.push("パスワードは半角文字で入力してください。");
-			}
-		}
-
-		// エラーメッセージがある場合
-		if (errorMessages.length > 0) {
-			var errorList = document.getElementById("error-list");
-			errorList.innerHTML = ""; // 既存のエラーメッセージをクリア
-
-			errorMessages.forEach(function(message) {
-				var li = document.createElement("li");
-				li.innerText = message;
-				errorList.appendChild(li);
-			});
-
-			return false; // フォームの送信をキャンセル
-		}
-		return true; // フォームを送信
+	//文字数チェック
+	if (userId.length > 16) {
+		errorMessages.push(errorMessages);
+	}
+	// 全角文字をチェック
+	if (/[\u3000-\u303F\u4E00-\u9FFF\uFF00-\uFFEF]/.test(userId)) { 
+		errorMessages.push(errorMessages);
 	}
 
 
+	// パスワードチェック
+	if (password === "") {
+		errorMessages.push(errorMessages);
+	}
+	// パスワードの文字数チェック
+	if (password.length > 16) {
+		errorMessages.push(errorMessages);
+	}
+	// パスワードの全角文字チェック
+	if (/[\u3000-\u303F\u4E00-\u9FFF\uFF00-\uFFEF]/.test(password)) {
+		errorMessages.push(errorMessages);
+	}
 
-//ログインIDが全角文字・16文字を超える場合のエラーメッセージ
+
+	// エラーメッセージがある場合
+	if (errorMessages.length > 0) {
+		displayErrors(errorMessages); // エラーメッセージの表示を専用の関数に委任
+		return false; // フォームの送信をキャンセル
+	}
+	return true; // フォームを送信
+}
+
+
+
+
 
