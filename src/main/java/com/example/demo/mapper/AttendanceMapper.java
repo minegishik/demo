@@ -34,7 +34,7 @@ public interface AttendanceMapper {
 	 */
 	
 	AttendanceUser findByAttendanceDate(
-			@Param("userId") Integer userId,@Param("date") Date date);
+			@Param("userId") Integer userId,@Param("date") Date date1);
 	
 	
 	
@@ -108,6 +108,14 @@ public interface AttendanceMapper {
 	List<MonthlyAttendanceDto> monthlyAttendanceReqList();
 	
 	/**
+	 * 月次勤怠情報の削除
+	 * 
+	 * @param userId
+	 * @param targetYearMonth
+	 */
+	void deleteMonthlyAttendance(@Param("userId") Integer userId, @Param("targetYearMonth") Date targetYearMonth);
+	
+	/**
 	 * 承認申請の却下
 	 * 
 	 * @param userId
@@ -115,6 +123,8 @@ public interface AttendanceMapper {
 	 */
 	void rejectApprovalStatus(Integer userId , LocalDate date);
 	
+	
+	void test(MonthlyAttendance monthlyAttendance);
 	/**
 	 * 承認申請の承認
 	 * 
