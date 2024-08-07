@@ -43,6 +43,8 @@
 		<div th:if="${errorMessage}" class="error" role="alert">
 			<p th:text="${errorMessage}"></p>
 		</div>
+<!--		エラー文とクラス編集-->
+			<div th:if="${errorCheck}" th:text="${errorCheck}" class="error"></div>
 
 
 
