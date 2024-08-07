@@ -9,10 +9,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import com.example.demo.dto.MonthlyAttendanceDto;
 import com.example.demo.entity.AttendanceUser;
 import com.example.demo.entity.MonthlyAttendance;
+import com.example.demo.form.AttendanceForm;
 import com.example.demo.form.AttendanceFormList;
 import com.example.demo.mapper.AttendanceMapper;
 import com.example.demo.util.LoginUserUtil;
@@ -98,6 +101,62 @@ public class AttendanceService {
     public void deleteAttendance(Integer userId,LocalDate date) {
     	attendanceMapper.deleteAttendance(userId, date);
     }
+    
+    
+    /**
+     * 勤務状況と出退勤時間のエラーチェック
+     * 
+     * @param attendanceForm
+     * @param userId
+     * @param date1
+     * @param result
+     * @return
+     */
+	public Boolean errorCheck(AttendanceFormList attendanceFormList, BindingResult result, Model model) {
+//		AttendanceForm attendanceForm = new AttendanceForm();
+		boolean errorFlg = false;
+		for (int i = 0; i < attendanceFormList.getAttendanceFormList().size() ; i++) {
+		
+			AttendanceForm attendanceForm = attendanceFormList.getAttendanceFormList().get(i);
+
+		if (attendanceForm.getStatus() != null) {
+			if (attendanceForm.getStatus() == 1 || attendanceForm.getStatus() == 2 || attendanceForm.getStatus() == 4
+					|| attendanceForm.getStatus() == 5 || attendanceForm.getStatus() == 9
+					|| attendanceForm.getStatus() == 11) {
+				if (attendanceForm.getStartHour() != null || attendanceForm.getStartMinute() != null
+						|| attendanceForm.getEndHour() != null || attendanceForm.getEndMinute() != null) {
+					errorFlg = true;
+				}
+			} else {
+				if (attendanceForm.getStartHour() == null || attendanceForm.getStartMinute() == null
+						|| attendanceForm.getEndHour() == null || attendanceForm.getEndMinute() == null) {
+					errorFlg = true;
+				}
+
+			}
+//			model.addAttribute("errorCheck", "エラー");
+		}
+		
+		}
+		return errorFlg;
+
+	}
+    	
+//    	if (searchResult.getStatus() == 1 || searchResult.getStatus() == 2 || searchResult.getStatus() == 4 || searchResult.getStatus() == 5 || searchResult.getStatus() == 9 || searchResult.getStatus() == 11) {
+//    		if (searchResult.getStartTime() != null || searchResult.getEndTime() != null) {
+//    			String errorCheckMessage = "指定された状態では、時間を入力することはできません。";
+//    			return errorCheckMessage;
+//    		} else {
+//    			return "";
+//    		}
+//    	} else {
+//    		if (searchResult.getStartTime() == null || searchResult.getEndTime() == null) {
+//    			String errorCheckMessage = "指定された状態では、時間が必須です。";
+//    			return errorCheckMessage;
+//    		} else {
+//    			return "";
+//    		}
+//    	}
 	
     
     /**
@@ -108,7 +167,7 @@ public class AttendanceService {
 	 * @param date
 	 * @return
 	 */
-	public String getMonthlyAttendance(Integer userId, Integer year, Integer month) {
+	public String getMonthlyAttendance(Integer userId, Integer year, Integer month, LocalDate date) {
 
 		YearMonth yearMonth = YearMonth.of(year, month);
 		LocalDate targetYearMonth = yearMonth.atDay(1);
@@ -122,19 +181,19 @@ public class AttendanceService {
 		request.setTargetYearMonth(java.sql.Date.valueOf(targetYearMonth));
 		request.setDate(java.sql.Date.valueOf(LocalDate.now()));
 		request.setStatus((short) 1);
+		
 
 		if (searchResult == null) {
 			attendanceMapper.appricationMonthlyAttendance(request);
 			return "承認申請が完了しました。";
 
 		} else {
-
-			request.setId(searchResult.getId());
-			attendanceMapper.update(request);
 			
+			request.setId(searchResult.getId());
+			request.setStatus((short) 1);
+			attendanceMapper.test(request);
 
-			System.out.println(searchResult);
-			return "承認申請を更新しました。";
+			return "再申請が完了しました。";
 		}
 
 	}
@@ -209,9 +268,10 @@ public class AttendanceService {
 	 * @param targetYearMonth
 	 * @param monthlyAttendance
 	 */
-	public void rejected(AttendanceFormList formList) {
-		
+	public void rejected(AttendanceFormList formList, Integer userId, Integer year, Integer month) {
+			
 		attendanceMapper.rejectApprovalStatus(formList.getAttendanceFormList().get(0).getUserId(), formList.getAttendanceFormList().get(0).getDate());
+		
 	}
 	
 	/**
