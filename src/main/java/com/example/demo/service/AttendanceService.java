@@ -113,50 +113,35 @@ public class AttendanceService {
      * @return
      */
 	public Boolean errorCheck(AttendanceFormList attendanceFormList, BindingResult result, Model model) {
-//		AttendanceForm attendanceForm = new AttendanceForm();
 		boolean errorFlg = false;
-		for (int i = 0; i < attendanceFormList.getAttendanceFormList().size() ; i++) {
-		
+		for (int i = 0; i < attendanceFormList.getAttendanceFormList().size(); i++) {
+
 			AttendanceForm attendanceForm = attendanceFormList.getAttendanceFormList().get(i);
 
-		if (attendanceForm.getStatus() != null) {
-			if (attendanceForm.getStatus() == 1 || attendanceForm.getStatus() == 2 || attendanceForm.getStatus() == 4
-					|| attendanceForm.getStatus() == 5 || attendanceForm.getStatus() == 9
-					|| attendanceForm.getStatus() == 11) {
-				if (attendanceForm.getStartHour() != null || attendanceForm.getStartMinute() != null
-						|| attendanceForm.getEndHour() != null || attendanceForm.getEndMinute() != null) {
-					errorFlg = true;
-				}
-			} else {
-				if (attendanceForm.getStartHour() == null || attendanceForm.getStartMinute() == null
-						|| attendanceForm.getEndHour() == null || attendanceForm.getEndMinute() == null) {
-					errorFlg = true;
-				}
+			if (attendanceForm.getStatus() != null) {
+				// 勤務状況が"休日"だった場合、出退勤時間を入力したらエラー
+				if (attendanceForm.getStatus() == 1 || attendanceForm.getStatus() == 2
+						|| attendanceForm.getStatus() == 4
+						|| attendanceForm.getStatus() == 5 || attendanceForm.getStatus() == 9
+						|| attendanceForm.getStatus() == 11) {
+					if (attendanceForm.getStartHour() != null || attendanceForm.getStartMinute() != null
+							|| attendanceForm.getEndHour() != null || attendanceForm.getEndMinute() != null) {
+						errorFlg = true;
+					}
+				} else {
+					// 勤務状況が"出勤"だった場合、出退勤時間を入力しないとエラー
+					if (attendanceForm.getStartHour() == null || attendanceForm.getStartMinute() == null
+							|| attendanceForm.getEndHour() == null || attendanceForm.getEndMinute() == null) {
+						errorFlg = true;
+					}
 
+				}
 			}
-//			model.addAttribute("errorCheck", "エラー");
-		}
-		
+
 		}
 		return errorFlg;
 
 	}
-    	
-//    	if (searchResult.getStatus() == 1 || searchResult.getStatus() == 2 || searchResult.getStatus() == 4 || searchResult.getStatus() == 5 || searchResult.getStatus() == 9 || searchResult.getStatus() == 11) {
-//    		if (searchResult.getStartTime() != null || searchResult.getEndTime() != null) {
-//    			String errorCheckMessage = "指定された状態では、時間を入力することはできません。";
-//    			return errorCheckMessage;
-//    		} else {
-//    			return "";
-//    		}
-//    	} else {
-//    		if (searchResult.getStartTime() == null || searchResult.getEndTime() == null) {
-//    			String errorCheckMessage = "指定された状態では、時間が必須です。";
-//    			return errorCheckMessage;
-//    		} else {
-//    			return "";
-//    		}
-//    	}
 	
     
     /**
@@ -188,7 +173,7 @@ public class AttendanceService {
 			return "承認申請が完了しました。";
 
 		} else {
-			
+			// 申請が却下されていた場合の処理
 			request.setId(searchResult.getId());
 			request.setStatus((short) 1);
 			attendanceMapper.test(request);
