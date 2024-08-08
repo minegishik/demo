@@ -123,7 +123,11 @@ public interface AttendanceMapper {
 	 */
 	void rejectApprovalStatus(Integer userId , LocalDate date);
 	
-	
+	/**
+	 * 却下後の処理
+	 * 
+	 * @param monthlyAttendance
+	 */
 	void test(MonthlyAttendance monthlyAttendance);
 	/**
 	 * 承認申請の承認
