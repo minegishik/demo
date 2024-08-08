@@ -1,4 +1,4 @@
-k<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -89,7 +89,8 @@ k<!DOCTYPE html>
 				th:disabled="${isDisabled1 == true or isDisabled2 == true}"/>
 				<input type="hidden" name="year" th:value="${param.year}" />
 				<input type="hidden" name="month" th:value="${param.month}" />
-				<input type="submit" value="登録" name="insert" class="btn btn-mgmt" th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" />
+				<input type="submit" value="登録" name="insert" class="btn btn-mgmt"
+				 th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" th:disabled="${isDisabled1 == true or isDisabled2 == true}" />
 			</div>
 			
 			<div th:if="${successMessage}" class="success" role="alert">
