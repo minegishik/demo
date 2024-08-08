@@ -229,8 +229,6 @@ public class AttendanceController {
 
 		model.addAttribute("loginUser", loginUser);
 		int userId = loginUser.getUserId();
-		
-
 
 		//	  //勤怠情報を削除
 		for (AttendanceForm attendanceForm : formList.getAttendanceFormList()) {
@@ -252,7 +250,6 @@ public class AttendanceController {
 			LocalTime endTime = parseTime(attendanceForm.getEndHour(), attendanceForm.getEndMinute());
 
 			LocalDate date = attendanceForm.getDate();
-			
 
 			if (attendanceForm.getStatus() != null && attendanceForm.getDate() != null) {
 
@@ -264,7 +261,7 @@ public class AttendanceController {
 				attendanceForm.setFormattedWeek(formattedDayOfWeek);
 				// フォームリストに追加する
 				form.add(attendanceForm);
-				
+
 				// エラーチェック
 				if (attendanceService.errorCheck(formList, result, model)) {
 					model.addAttribute("errorCheck", "※勤怠時間に誤りがあります。");
@@ -286,7 +283,7 @@ public class AttendanceController {
 
 		// 成功メッセージの設定
 		model.addAttribute("successMessage", "勤怠登録が完了しました。");
-		
+
 		return displayIn(selectedYear, selectedMonth, formList, session, model);
 	}
 
@@ -329,21 +326,32 @@ public class AttendanceController {
 	public String approve(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month,
 			HttpSession session, Model model,
 			RedirectAttributes redirectAttribute, @ModelAttribute AttendanceFormList formList, LocalDate date,
-			MonthlyAttendance monthlyAttendance) {
+			MonthlyAttendance monthlyAttendance, AttendanceFormList attendanceFormList) {
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
 		Integer userId = loginUser.getUserId();
-		// ステータス（承認状況）の表示
 
-		String message = attendanceService.getMonthlyAttendance(userId, year, month, date);
-		redirectAttribute.addFlashAttribute("message", message);
+		for (int i = 0; i < attendanceFormList.getAttendanceFormList().size(); i++) {
+			AttendanceForm form = attendanceFormList.getAttendanceFormList().get(i);
 
-		model.addAttribute("message", message);
+			if (form.getStatus() == null) {
+				// 勤務状況がnullだった場合エラー表示
+				String statusNull = "※勤務状況を入力してください。";
+				model.addAttribute("statusNull", statusNull);
+			} else {
+				// 申請処理・メッセージ表示
+				String message = attendanceService.getMonthlyAttendance(userId, year, month, date);
+				redirectAttribute.addFlashAttribute("message", message);
 
-		String statusMessage = attendanceService.checkStatus(userId, year, month);
-		model.addAttribute("statusMessage", statusMessage);
+				model.addAttribute("message", message);
 
+				// ステータス（承認状況）の表示
+				String statusMessage = attendanceService.checkStatus(userId, year, month);
+				model.addAttribute("statusMessage", statusMessage);
+
+			}
+		}
 		return displayIn(year, month, formList, session, model);
 	}
 
@@ -462,7 +470,7 @@ public class AttendanceController {
 		}
 
 		model.addAttribute("monthlyAttendanceDtoList", monthlyAttendanceDtoList);
-		
+
 		// 役割による表示専用フラグ
 		boolean isReadOnly = "0002".equals(loginUser.getRole());
 		model.addAttribute("isReadOnly", isReadOnly);
