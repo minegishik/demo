@@ -141,11 +141,11 @@ public class UserService {
 
 		// 権限が"未選択"だった場合
 		if (userForm.getRole() == null || userForm.getRole().equals("select")) {
-			result.rejectValue("role", "role", "※権限: 存在しない権限です。");
+			result.rejectValue("role", "role", "※権限: 選択してください。");
 		}
 		// 利用開始日の形式が間違いだった場合
 		if (!isValidDate(userForm.getStartDate())) {
-			result.rejectValue("startDate", "startDate", "※利用開始日: yyyy-MM-dd のフォーマットで入力してください。");
+			result.rejectValue("startDate", "startDate", "※利用開始日: 例:yyyy-mm-dd の形式で入力してください。");
 		}
 		return "";
 
