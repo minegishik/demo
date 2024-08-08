@@ -5,7 +5,7 @@
 	
 	<select id="findByAttendanceDate" resultType="com.example.demo.entity.AttendanceUser">
 		SELECT *
-		FROM attendence
+		FROM attendance
 		WHERE user_id = #{userId}
 			AND date = #{date}
 	</select>
@@ -118,7 +118,18 @@
 				AND target_year_month = #{date}
 	</update>
 	
-	
+	<update id="test">
+		UPDATE monthly_attendance_req
+		 SET 
+	 		user_id = #{userId}, 
+	 		target_year_month = #{targetYearMonth}, 
+	 		date = #{date}, 
+	 		status = #{status} 
+	 	WHERE
+	 		id = #{id}
+	 </update>
+	 
+	 
 	<update id="approvalStatus">
 		UPDATE monthly_attendance_req
 		SET
