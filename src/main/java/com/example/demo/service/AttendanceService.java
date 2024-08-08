@@ -130,8 +130,8 @@ public class AttendanceService {
 					}
 				} else {
 					// 勤務状況が"出勤"だった場合、出退勤時間を入力しないとエラー
-					if (attendanceForm.getStartHour() == null || attendanceForm.getStartMinute() == null
-							|| attendanceForm.getEndHour() == null || attendanceForm.getEndMinute() == null) {
+					if (attendanceForm.getStartHour() == null || attendanceForm.getStartHour().isEmpty() || attendanceForm.getStartMinute() == null || attendanceForm.getStartMinute().isEmpty() 
+							|| attendanceForm.getEndHour() == null || attendanceForm.getEndHour().isEmpty() || attendanceForm.getEndMinute() == null || attendanceForm.getEndMinute().isEmpty()) {
 						errorFlg = true;
 					}
 
