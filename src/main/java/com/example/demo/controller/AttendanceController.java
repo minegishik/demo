@@ -267,7 +267,7 @@ public class AttendanceController {
 				
 				// エラーチェック
 				if (attendanceService.errorCheck(formList, result, model)) {
-					model.addAttribute("errorCheck", "エラー");
+					model.addAttribute("errorCheck", "※勤怠時間に誤りがあります。");
 					return displayIn(selectedYear, selectedMonth, formList, session, model);
 				}
 				//エンティティにセット
