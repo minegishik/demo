@@ -123,7 +123,7 @@
 							</td>
 							<td class="w100">
 								<select th:name="|attendanceFormList[${stat.index}].status|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
-									<option value="null" th:text="'選択してください'"></option>
+									<option value="" th:text="'選択してください'"></option>
 									<option value="0" th:selected="${form.status == 0}">通常出勤</option>
 									<option value="1" th:selected="${form.status == 1}">休日</option>
 									<option value="2" th:selected="${form.status == 2}">祝日</option>
