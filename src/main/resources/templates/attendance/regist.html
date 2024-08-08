@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+k<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -10,8 +10,7 @@
 </head>
 
 <body>
-
-	<!--	<script th:src="@{/js/attendance.js}"></script>-->
+	
 	<div class="container">
 		<div class="component">
 			<p>ユーザ名: <span th:text="${loginUser.name}"></span></p>
@@ -81,7 +80,7 @@
 		
 		
 		
-		<form id="attendanceForm" th:action="@{/attendance/regist}" method="post" onsubmit="return validateForm();">
+		<form th:action="@{/attendance/regist}" method="post">
 
 			<div style="display: flex; justify-content: flex-end;">
 				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" name="reject" />
@@ -122,7 +121,7 @@
 							<td class="w40" th:text="${form.formattedWeek}">
 							</td>
 							<td class="w100">
-								<select th:name="|attendanceFormList[${stat.index}].status|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
+								<select th:name="|attendanceFormList[${stat.index}].status|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 									<option value="null" th:text="'選択してください'"></option>
 									<option value="0" th:selected="${form.status == 0}">通常出勤</option>
 									<option value="1" th:selected="${form.status == 1}">休日</option>
@@ -141,7 +140,7 @@
 							</td>
 							<td class="w120">
 						
-								<select th:name="|attendanceFormList[${stat.index}].startHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
+								<select th:name="|attendanceFormList[${stat.index}].startHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.startHour == null || form.startHour.isEmpty() || form.startHour == '0'}"></option>
@@ -152,7 +151,7 @@
 								</select>
 								:
 						
-								<select th:name="|attendanceFormList[${stat.index}].startMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
+								<select th:name="|attendanceFormList[${stat.index}].startMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.startMinute == null || form.startMinute.isEmpty() || form.startMinute == '0'}">
@@ -166,7 +165,7 @@
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|" th:value="${form.startTime}"/>
 							</td>
 							<td class="w120">
-								<select th:name="|attendanceFormList[${stat.index}].endHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
+								<select th:name="|attendanceFormList[${stat.index}].endHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.endHour == null || form.endHour.isEmpty() || form.endHour == '0'}"></option>
@@ -177,13 +176,13 @@
 								</select>
 								:
 						
-								<select th:name="|attendanceFormList[${stat.index}].endMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
+								<select th:name="|attendanceFormList[${stat.index}].endMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 						
 									<option value="" th:text="--"
 										th:selected="${form.endMinute == null || form.endMinute.isEmpty() || form.endMinute == '0'}" th:disabled="${isDisabled1 == true or isDisabled2 == true}"></option>
 						
 									<option th:each="minute : ${minutes}" th:value="${minute}" th:text="${minute}"
-										th:selected="${form.endMinute != null && !form.endMinute.isEmpty() && form.endMinute != '0' && form.endMinute == minute}" th:disabled="${isDisabled1 == true or isDisabled2 == true}">
+										th:selected="${form.endMinute != null && !form.endMinute.isEmpty() && form.endMinute != '0' && form.endMinute == minute}" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 									</option>
 								</select>
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].endTime|" th:value="${form.endTime}" />
@@ -191,7 +190,7 @@
 							<td class="w150">
 								<input type="text" id="remarks" th:name="|attendanceFormList[${stat.index}].remarks|" th:value="${form.remarks}"
 									placeholder="備考を入力してください" pattern="[\u3040-\u30FF\u4E00-\u9FFF\uFF00-\uFFEF]{1,20}"
-									title="全角文字で20文字以内で入力してください" th:disabled="${isDisabled1 == true or isDisabled2 == true}"/>
+									title="全角文字で20文字以内で入力してください" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}" />
 							</td>
 							<input type="hidden" th:name="|attendanceFormList[${stat.index}].userId|" th:value="${form.userId}" />
 						</tr>
