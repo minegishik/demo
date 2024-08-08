@@ -266,8 +266,6 @@ public class AttendanceController {
 				form.add(attendanceForm);
 				
 				// エラーチェック
-				System.out.println(attendanceForm.getStatus());
-				System.out.println(attendanceForm.getStartHour());
 				if (attendanceService.errorCheck(formList, result, model)) {
 					model.addAttribute("errorCheck", "エラー");
 					return displayIn(selectedYear, selectedMonth, formList, session, model);
@@ -287,11 +285,8 @@ public class AttendanceController {
 		}
 
 		// 成功メッセージの設定
-		String successMessage = "勤怠登録が完了しました。";
 		model.addAttribute("successMessage", "勤怠登録が完了しました。");
 		
-		System.out.println(successMessage);
-
 		return displayIn(selectedYear, selectedMonth, formList, session, model);
 	}
 
