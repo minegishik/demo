@@ -268,11 +268,8 @@ public class AttendanceController {
 				// エラーチェック
 				System.out.println(attendanceForm.getStatus());
 				System.out.println(attendanceForm.getStartHour());
-//				booean = attendanceService.errorCheck(formList, result, model);
 				if (attendanceService.errorCheck(formList, result, model)) {
-//					String errorCheck = "エラー";
 					model.addAttribute("errorCheck", "エラー");
-					System.out.println();
 					return displayIn(selectedYear, selectedMonth, formList, session, model);
 				}
 				//エンティティにセット
