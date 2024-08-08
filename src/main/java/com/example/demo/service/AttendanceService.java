@@ -156,7 +156,6 @@ public class AttendanceService {
 
 		YearMonth yearMonth = YearMonth.of(year, month);
 		LocalDate targetYearMonth = yearMonth.atDay(1);
-		
 
 		MonthlyAttendance searchResult = attendanceMapper.findMonthlyAttendanceByUserAndMonth(userId,
 				java.sql.Date.valueOf(targetYearMonth));
@@ -166,7 +165,6 @@ public class AttendanceService {
 		request.setTargetYearMonth(java.sql.Date.valueOf(targetYearMonth));
 		request.setDate(java.sql.Date.valueOf(LocalDate.now()));
 		request.setStatus((short) 1);
-		
 
 		if (searchResult == null) {
 			attendanceMapper.appricationMonthlyAttendance(request);
