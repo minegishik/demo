@@ -45,6 +45,7 @@
 <!--		エラー文とクラス編集-->
 			<div th:if="${errorCheck}" th:text="${errorCheck}" class="error"></div>
 			<div th:if="${statusNull}" th:text="${statusNull}" class="error"></div>
+			<div id="error-message" class="error" style="display: none;"></div>
 
 
 
@@ -81,17 +82,21 @@
 		
 		
 		
-		<form th:action="@{/attendance/regist}" method="post">
+		<form th:action="@{/attendance/regist}" method="post" id="attendance-form">
 
-			<div style="display: flex; justify-content: flex-end;">
+			<div style=" top: 0; display: flex; justify-content: flex-end;">
 				<input type="submit" value="却下" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" name="reject" />
 				<input type="submit" value="承認" class="btn btn-mgmt" th:if="${session.loginUser.role == '0002'}" name="approval" />
-				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" th:if="${session.loginUser.role == '0004'}" name="apprication" 
-				th:disabled="${isDisabled1 == true or isDisabled2 == true}"/>
+				<input type="submit" value="承認申請" class="btn btn-mgmt" style="margin-right: 10px;" th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" name="apprication" 
+				th:disabled="${isDisabled1 == true or isDisabled2 == true}" id="submit-button"
+				th:classappend="${isDisabled1 == true or isDisabled2 == true ? 'btn-disabled' : 'btn-active'}"/>
+				
+
 				<input type="hidden" name="year" th:value="${param.year}" />
 				<input type="hidden" name="month" th:value="${param.month}" />
 				<input type="submit" value="登録" name="insert" class="btn btn-mgmt"
-				 th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" th:disabled="${isDisabled1 == true or isDisabled2 == true}" />
+				 th:if="${session.loginUser.role == '0003' || session.loginUser.role == '0004'}" th:disabled="${isDisabled1 == true or isDisabled2 == true}" 
+				 th:classappend="${isDisabled1 == true or isDisabled2 == true ? 'btn-disabled' : 'btn-active'}"/>
 			</div>
 			
 			<div th:if="${successMessage}" class="success" role="alert">
@@ -115,15 +120,17 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="form, stat : ${attendanceFormList.attendanceFormList}">
-							<td class="w40">
+						<tr th:each="form, stat : ${attendanceFormList.attendanceFormList}"
+						>
+							<td class="w40" >
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].date|" th:value="${form.date}" />
 								<span th:text="${form.formattedDate}"></span>
 							</td>
 							<td class="w40" th:text="${form.formattedWeek}">
 							</td>
-							<td class="w100">
-								<select th:name="|attendanceFormList[${stat.index}].status|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
+							<td class="w100" >
+								<select th:name="|attendanceFormList[${stat.index}].status|" class="status-select"
+								th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
 									<option value="" th:text="'選択してください'"></option>
 									<option value="0" th:selected="${form.status == 0}">通常出勤</option>
 									<option value="1" th:selected="${form.status == 1}">休日</option>
@@ -142,7 +149,8 @@
 							</td>
 							<td class="w120">
 						
-								<select th:name="|attendanceFormList[${stat.index}].startHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
+								<select th:name="|attendanceFormList[${stat.index}].startHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}"
+								th:classappend="${errorFields != null && errorFields[stat.index] != null} ? 'danger' : ''">
 						
 									<option value="" th:text="--"
 										th:selected="${form.startHour == null || form.startHour.isEmpty() || form.startHour == '0'}"></option>
@@ -153,7 +161,8 @@
 								</select>
 								:
 						
-								<select th:name="|attendanceFormList[${stat.index}].startMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
+								<select th:name="|attendanceFormList[${stat.index}].startMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}"
+								th:classappend="${errorFields != null && errorFields[stat.index] != null} ? 'danger' : ''">
 						
 									<option value="" th:text="--"
 										th:selected="${form.startMinute == null || form.startMinute.isEmpty() || form.startMinute == '0'}">
@@ -167,7 +176,8 @@
 								<input type="hidden" th:name="|attendanceFormList[${stat.index}].startTime|" th:value="${form.startTime}"/>
 							</td>
 							<td class="w120">
-								<select th:name="|attendanceFormList[${stat.index}].endHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
+								<select th:name="|attendanceFormList[${stat.index}].endHour|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}"
+								th:classappend="${errorFields != null && errorFields[stat.index] != null} ? 'danger' : ''">
 						
 									<option value="" th:text="--"
 										th:selected="${form.endHour == null || form.endHour.isEmpty() || form.endHour == '0'}"></option>
@@ -178,7 +188,8 @@
 								</select>
 								:
 						
-								<select th:name="|attendanceFormList[${stat.index}].endMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}">
+								<select th:name="|attendanceFormList[${stat.index}].endMinute|" th:disabled="${isDisabled1 == true or isDisabled2 == true or session.loginUser.role == '0002'}"
+								th:classappend="${errorFields != null && errorFields[stat.index] != null} ? 'danger' : ''">
 						
 									<option value="" th:text="--"
 										th:selected="${form.endMinute == null || form.endMinute.isEmpty() || form.endMinute == '0'}" th:disabled="${isDisabled1 == true or isDisabled2 == true}"></option>
@@ -201,7 +212,38 @@
 			</div>
 		</form>
 	</div>
+<script>
+    document.getElementById('submit-button').addEventListener('click', function(event) {
+        event.preventDefault(); // デフォルトのフォーム送信を防ぐ
 
+        var statusSelects = document.querySelectorAll('.status-select');
+        var hasError = false;
+        var errorMessage = '';
+
+        // 全ての勤務状況をチェック
+        statusSelects.forEach(function(select) {
+            var value = select.value.trim();
+            if (value === '') {
+                // ステータスが空の場合、エラー強調
+                select.classList.add('danger');
+                hasError = true;
+            } else {
+                // ステータスが設定されている場合、エラー強調を解除
+                select.classList.remove('danger');
+            }
+        });
+
+        // エラーメッセージの設定
+        if (hasError) {
+            errorMessage = "※勤務状況を入力してください。";
+            document.getElementById('error-message').textContent = errorMessage;
+            document.getElementById('error-message').style.display = 'block';
+        } else {
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('attendance-form').submit(); // フォームを送信
+        }
+    });
+    </script>
 
 </body>
 
