@@ -113,8 +113,6 @@ public class AttendanceController {
 		// ステータス（承認状況）を表示
 		String statusMessage = attendanceService.checkStatus(userId, year, month);
 		model.addAttribute("statusMessage", statusMessage);
-		
-		System.out.println("ステータス" + statusMessage);
 
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
@@ -356,8 +354,6 @@ public class AttendanceController {
 				// ステータス（承認状況）の表示
 				String statusMessage = attendanceService.checkStatus(userId, year, month);
 				model.addAttribute("statusMessage", statusMessage);
-				
-				
 
 			}
 		}
