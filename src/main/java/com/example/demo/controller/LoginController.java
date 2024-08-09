@@ -69,7 +69,7 @@ public class LoginController {
 	        // ログイン後の初期画面にリダイレクト
 	        return loginUserUtil.sendDisp();
 	    } else {
-	        model.addAttribute("loginError", "※ユーザーIDまたはパスワードが正しくありません");
+	        model.addAttribute("loginError", "ユーザーID、パスワードが不正、もしくはユーザーが無効です。");
 	        return "/login/index";
 	    }
 	}
