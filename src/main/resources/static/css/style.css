@@ -12,8 +12,11 @@ body {
 .container {
 	justify-content: center;
 	align-items: center;
-	height: 100%
-	;
+	height: 100%;
+	display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
 }
 .component {
 	justify-content: center;
@@ -42,19 +45,43 @@ body {
 
 table {
   background-color: transparent;
+  border-collapse: collapse;
 }
 
 .table-container {
-    display: flex;
+	max-height: 600px; /* 必要に応じて高さを調整 */
+	flex: 1; /* テーブルコンテナを利用可能なスペースに合わせる */
+    overflow: auto; /* スクロール可能にする */
+	max-width: 100%; /* テーブルの最大幅を親要素に合わせる */
+   display: block; /* テーブルをブロック要素として表示 */
     justify-content: center; /* 横方向に中央配置 */
     align-items: center;     /* 縦方向に中央配置 */
-    overflow: hidden; /* コンテナ内でのスクロールを防ぐ */
+    border: 1px solid #ddd; /* テーブル全体の外枠に罫線を追加 */
+    border-radius: 7px; /* 角の丸みを設定 (任意) */
 }
 
-.table-hover {
-    display: block; /* テーブル全体をブロック表示 */
-    max-width: 100%; /* テーブルの最大幅を親要素に合わせる */
-    overflow-x: auto; /* 横方向のスクロールを可能にする */
+
+
+/* テーブルヘッダーを固定 */
+.table-hover thead {
+    position: sticky;
+    top: 0; /* 上部に固定 */
+    background-color: #ddd; /* ヘッダーの背景色 */
+    z-index: 1; /* ヘッダーがテーブルボディの上に表示されるように設定 */
+}
+
+.table-hover thead th {
+    border: 1px solid #ddd; /* 上下左右に罫線を追加 */
+    padding: 8px; /* パディングを追加 */
+}
+
+.table-hover tbody td {
+    border: 1px solid #ddd; /* 上下左右に罫線を追加 */
+    padding: 10px; /* パディングを追加 */
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1; /* 行がホバーされたときの背景色 */
 }
 
 th, td {
@@ -91,12 +118,16 @@ th, td {
 	width: 150px;
 }
 
+.danger {
+	border: 1px solid red;
+	background-color: lightpink;
+}
 
 .btn-login {
 	margin: 0 auto;
 	padding: 15px 100px;
 	/* パディング */
-	background-color: #DCDCDC;
+	background-color: #F0E68C;
 	/* ボタンの背景色 */
 	color: #fff;
 	/* テキストの色 */
@@ -104,18 +135,13 @@ th, td {
 	/* ボーダーなし */
 	cursor: pointer;
 	border-radius: 10px;
-}
-
-.btn-login:hover {
-	background-color: #F0E68C;
-	/* ホバー時の背景色 */
 }
 
 .btn-mgmt {
 	margin: 30px;
 	padding: 6px 25px;
 	/* パディング */
-	background-color: #DCDCDC;
+	background-color: #F0E68C;
 	/* ボタンの背景色 */
 	color: #fff;
 	/* テキストの色 */
@@ -125,16 +151,20 @@ th, td {
 	border-radius: 10px;
 }
 
-.btn-mgmt:hover {
+.btn-active {
 	background-color: #F0E68C;
 	/* ホバー時の背景色 */
+}
+.btn-disabled {
+   background-color: #DCDCDC;
+    cursor: not-allowed;
 }
 
 .btn-mgmt-regist {
 	margin: 30px;
 	padding: 6px 25px;
 	/* パディング */
-	background-color: #DCDCDC;
+	background-color: #F0E68C;
 	/* ボタンの背景色 */
 	color: #fff;
 	/* テキストの色 */
@@ -145,10 +175,6 @@ th, td {
 	justify-content: flex-end !important;
 }
 
-.btn-mgmt-regist:hover {
-	background-color: #F0E68C;
-	/* ホバー時の背景色 */
-}
 
 .btn-default {
 	color: #ffffff;
@@ -172,7 +198,7 @@ fieldset {
 	margin-left: auto;
 	margin-right: auto;
 	height: 400px;
-	width: 70%;
+	width: 700px;
 	padding: 30px;
 	border: 2px solid #ccc;
 	border-radius: 10px;
