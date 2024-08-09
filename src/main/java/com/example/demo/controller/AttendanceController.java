@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -112,6 +113,8 @@ public class AttendanceController {
 		// ステータス（承認状況）を表示
 		String statusMessage = attendanceService.checkStatus(userId, year, month);
 		model.addAttribute("statusMessage", statusMessage);
+		
+		System.out.println("ステータス" + statusMessage);
 
 		List<AttendanceUser> calendar = attendanceService.getCalendar(year, month);
 		model.addAttribute("calendar", calendar);
@@ -229,6 +232,14 @@ public class AttendanceController {
 
 		model.addAttribute("loginUser", loginUser);
 		int userId = loginUser.getUserId();
+		
+		 Map<Integer, String> errorFields = attendanceService.errorCheck(formList, result, model);
+		    
+		    if (!errorFields.isEmpty()) {
+		        model.addAttribute("errorCheck", "※勤怠時間に誤りがあります。");
+		        model.addAttribute("errorFields", errorFields);
+		        return displayIn(selectedYear, selectedMonth, formList, session, model); // 適切なビュー名に置き換えてください
+		    }
 
 		//	  //勤怠情報を削除
 		for (AttendanceForm attendanceForm : formList.getAttendanceFormList()) {
@@ -262,11 +273,7 @@ public class AttendanceController {
 				// フォームリストに追加する
 				form.add(attendanceForm);
 
-				// エラーチェック
-				if (attendanceService.errorCheck(formList, result, model)) {
-					model.addAttribute("errorCheck", "※勤怠時間に誤りがあります。");
-					return displayIn(selectedYear, selectedMonth, formList, session, model);
-				}
+				
 				//エンティティにセット
 				AttendanceUser newAttendance = new AttendanceUser();
 				// form から AttendanceUser に必要な情報をセット
@@ -349,6 +356,8 @@ public class AttendanceController {
 				// ステータス（承認状況）の表示
 				String statusMessage = attendanceService.checkStatus(userId, year, month);
 				model.addAttribute("statusMessage", statusMessage);
+				
+				
 
 			}
 		}
@@ -371,7 +380,6 @@ public class AttendanceController {
 			@ModelAttribute AttendanceFormList formList,
 			HttpSession session, Model model) {
 
-		//		displayIn(year, month, formList, session, model);
 
 		LoginUser loginUser = (LoginUser) session.getAttribute("loginUser");
 		model.addAttribute("loginUser", loginUser);
