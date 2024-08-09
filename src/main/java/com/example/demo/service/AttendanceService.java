@@ -114,41 +114,55 @@ public class AttendanceService {
      * @param result
      * @return
      */
-    public Map<Integer, String> errorCheck(AttendanceFormList formList, BindingResult result, Model model) {
-        Map<Integer, String> errorFields = new HashMap<>();
+	public Map<Integer, String> errorCheck(AttendanceFormList formList, BindingResult result, Model model) {
+		Map<Integer, String> errorFields = new HashMap<>();
 
-        for (int i = 0; i < formList.getAttendanceFormList().size(); i++) {
-            AttendanceForm attendanceForm = formList.getAttendanceFormList().get(i);
-            boolean hasError = false;
+		for (int i = 0; i < formList.getAttendanceFormList().size(); i++) {
+			AttendanceForm attendanceForm = formList.getAttendanceFormList().get(i);
+			boolean hasError = false;
 
-            // statusがnullの場合の処理
-            Integer status = attendanceForm.getStatus();
-            if (status != null) {
-            	if (status == 1 || status == 2 || status == 4 || status == 5 || status == 9 || status == 11) {
-                    // 休日に出勤時間や退勤時間が入力されている場合はエラー
-                    if (attendanceForm.getStartHour() != null || attendanceForm.getStartMinute() != null
-                            || attendanceForm.getEndHour() != null || attendanceForm.getEndMinute() != null) {
-                    }
-                } else {
-                    // 勤務日（休日以外）の場合
-                    // 出勤時間や退勤時間が入力されていない場合はエラー
-                    if (attendanceForm.getStartHour() == null || attendanceForm.getStartHour().isEmpty()
-                            || attendanceForm.getStartMinute() == null || attendanceForm.getStartMinute().isEmpty()
-                            || attendanceForm.getEndHour() == null || attendanceForm.getEndHour().isEmpty()
-                            || attendanceForm.getEndMinute() == null || attendanceForm.getEndMinute().isEmpty()) {
-                        hasError = true;
-                    }
-                }
-            } 
+			// statusがnullの場合の処理
+			Integer status = attendanceForm.getStatus();
 
-            if (hasError) {
-                errorFields.put(i, "error");
-            }
-        }
+			if (status != null) {
+				// 勤務状況の休日類を変数に格納
+				boolean isHoliday = status == 1 || status == 2 || status == 4 || status == 5 || status == 9
+						|| status == 11;
+				// 休日類を選択時に時間を入力したらエラー
+				if (isHoliday) {
+					if (isTimeFieldPresent(attendanceForm.getStartHour())
+							|| isTimeFieldPresent(attendanceForm.getStartMinute())
+							|| isTimeFieldPresent(attendanceForm.getEndHour())
+							|| isTimeFieldPresent(attendanceForm.getEndMinute())) {
+						hasError = true;
+					}
+				} else {
+					// 出勤類を選択時に時間を入力しなかったらエラー
+					if (!isTimeFieldValid(attendanceForm.getStartHour())
+							|| !isTimeFieldValid(attendanceForm.getStartMinute())
+							|| !isTimeFieldValid(attendanceForm.getEndHour())
+							|| !isTimeFieldValid(attendanceForm.getEndMinute())) {
+						hasError = true;
+					}
+				}
+			}
+			if (hasError) {
+				errorFields.put(i, "error");
+			}
+		}
 
-        return errorFields;
-    }
-	
+		return errorFields;
+	}
+
+	// 時間フィールドが空でないかチェックするヘルパーメソッド
+	private boolean isTimeFieldPresent(String field) {
+		return field != null && !field.trim().isEmpty();
+	}
+
+	// 時間フィールドが有効であるかチェックするヘルパーメソッド
+	private boolean isTimeFieldValid(String field) {
+		return field != null && !field.trim().isEmpty() && field.matches("\\d+"); // 数字のみで構成されているかチェック
+	}
     
     /**
 	 * 申請該当月の月次勤怠情報取得・申請処理
